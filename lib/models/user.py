@@ -108,7 +108,8 @@ class User:
         """
         row = CURSOR.execute(sql, (user_id,)).fetchone()
         return cls.instance_from_db(row) if row else None
-    
+
+    @classmethod
     def instance_from_db(cls, row):
         user = cls(row[0], row[1]) if row else None
         return user
