@@ -32,6 +32,13 @@ class CryptoCoin:
 
     @classmethod
     def insert_initial_data(cls):
+      sql = """
+        SELECT COUNT(*)
+        FROM crypto_coins
+      """
+      # checks to make sure there is only one copy of each crypto
+      count = CURSOR.execute(sql).fetchone()[0]
+      if count == 0:
         coins_data = [
             ("BTC", "Bitcoin"),
             ("ETH", "Ethereum"),
@@ -50,10 +57,10 @@ class CryptoCoin:
         CURSOR.executemany("INSERT INTO crypto_coins (symbol, name) VALUES (?, ?)", coins_data)
 
         CONN.commit()
-        coin_id = CURSOR.lastrowid
+        # coin_id = CURSOR.lastrowid
 
-        coin = cls(coin_id)
-        return coin
+        # coin = cls(coin_id)
+        # return coin
 
     @classmethod
     def create(cls, symbol, name):
@@ -115,4 +122,4 @@ class CryptoCoin:
         return cls(row[0], row[1], row[2]) if row else None
     
 CryptoCoin.create_table()
-CryptoCoin.insert_initial_data()
+# CryptoCoin.insert_initial_data()

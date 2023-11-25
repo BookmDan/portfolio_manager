@@ -43,7 +43,7 @@ class Portfolio:
             INSERT INTO portfolios (user_id, crypto_coin_id, amount)
             VALUES (?, ?, ?)
         """
-        CURSOR.execute(sql, (user.id, crypto_coin.coin_id, amount))
+        CURSOR.execute(sql, (user.user_id, crypto_coin.coin_id, amount))
         CONN.commit()
 
         portfolio_id = CURSOR.lastrowid
