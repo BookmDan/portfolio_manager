@@ -1,17 +1,18 @@
 # lib/cli.py
 from rich.style import Style
 from rich.console import Console
-from helpers import exit_program
+from models.user import User
+from helpers import exit_program, create_user, add_user
+
 console = Console()
 
 def main():
     while True:
         menu()
         choice = input("> ")
-        if choice == "0":
-            exit_program()
-        elif choice == "1":
-            create_user()
+        if choice == "1":
+            add_user()
+            # create_user()
         elif choice == "2":
             display_all_users()
         elif choice == "3":
@@ -22,6 +23,8 @@ def main():
             delete_portfolio()
         elif choice == "6":
             find_portfolio_by_symbol()
+        elif choice.lower() == 'x':
+            exit_program()
         else:
             print("Invalid choice")
 
@@ -29,7 +32,7 @@ def menu():
     print('')
     console.print("------[blue]Main Menu[/blue]-----------------", style="dark_sea_green bold")
     print(" ")
-    
+
     print("1. Create User")
     print("2. Display All Users")
     print("3. View User's Portfolios")

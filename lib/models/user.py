@@ -5,13 +5,9 @@ class User:
     @classmethod
     def create_table(cls):
         sql = """
-            CREATE TABLE IF NOT EXISTS portfolios (
+            CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY,
-                user_id INTEGER,
-                crypto_coin_id INTEGER,
-                amount REAL,
-                FOREIGN KEY (user_id) REFERENCES users (id),
-                FOREIGN KEY (crypto_coin_id) REFERENCES crypto_coins (id)
+                username TEXT
             )
         """
         CURSOR.execute(sql)
@@ -20,76 +16,89 @@ class User:
     @classmethod
     def drop_table(cls):
         sql = """
-            DROP TABLE IF EXISTS portfolios
+            DROP TABLE IF EXISTS users
         """
         CURSOR.execute(sql)
         CONN.commit()
 
-    def __init__(self, user, crypto_coin, amount, id=None):
-        self.id = id
-        self.user = user
-        self.crypto_coin = crypto_coin
-        self.amount = amount
+    def __init__(self, user_id, username):
+        self.user_id = user_id
+        self.username = username
+        # self.portfolios = []
 
     def __repr__(self):
-        return f'<Portfolio {self.id}: User ID: {self.user.id}, Coin ID: {self.crypto_coin.id}, Amount: {self.amount}>'
+        return f'<User {self.id}: Username: {self.username}>'
 
     @property
-    def amount(self):
-        return self._amount
+    def username(self):
+        return self._username
     
-    @amount.setter
-    def amount(self, amount):
-        if isinstance(amount, float) and amount >= 0:
-            self._amount = amount
+    @username.setter
+    def username(self, username):
+        if isinstance(username, str) and len(username):
+            self._username = username
         else:
-            raise ValueError('Amount must be a non-negative float')
+            raise ValueError('Username must be a non-empty string')
 
     @classmethod
-    def create(cls, user, crypto_coin, amount):
-        sql = """
-            INSERT INTO portfolios (user_id, crypto_coin_id, amount)
-            VALUES (?, ?, ?)
-        """
-        CURSOR.execute(sql, (user.id, crypto_coin.id, amount))
-        CONN.commit()
+    def create(cls, username):
+        if isinstance(username, str) and len(username) > 0:
+            sql = """
+                INSERT INTO users (username)
+                VALUES (?)
+            """
+            CURSOR.execute(sql, (username,))
+            CONN.commit()
 
-        portfolio_id = CURSOR.lastrowid
-        portfolio = cls(user, crypto_coin, amount, portfolio_id)
-        return portfolio
+            user_id = CURSOR.lastrowid
+            user = cls(user_id, username)
+            return user
+        else:
+            raise ValueError("Username msut be a non-empty string")
 
     @classmethod
-    def delete(cls, portfolio):
-        sql = """
-            DELETE FROM portfolios
-            WHERE id = ?
-        """
-        CURSOR.execute(sql, (portfolio.id,))
-        CONN.commit()
+    def delete(cls, user):
+        if user.id:
+            sql = """
+                DELETE FROM users
+                WHERE id = ?
+            """
+            CURSOR.execute(sql, (user.id,))
+            CONN.commit()
 
     @classmethod
     def display_all(cls):
+        cls.create_table()
+
+        sql = """
+            SELECT *
+            FROM users
+        """
+        rows = CURSOR.execute(sql).fetchall()
+        for row in rows:
+            print(f"User ID: {row[0]}, Username: {row[1]}")
+
+    def view_portfolios(self):
         sql = """
             SELECT *
             FROM portfolios
+            WHERE user_id = ?
         """
-        rows = CURSOR.execute(sql).fetchall()
+        rows = CURSOR.execute(sql, (self.id,)).fetchall()
         for row in rows:
             print(f"Portfolio ID: {row[0]}, User ID: {row[1]}, Coin ID: {row[2]}, Amount: {row[3]}")
 
     @classmethod
-    def find_by_id(cls, portfolio_id):
+    def find_by_id(cls, user_id):
         sql = """
             SELECT *
-            FROM portfolios
+            FROM users
             WHERE id = ?
         """
-        row = CURSOR.execute(sql, (portfolio_id,)).fetchone()
+        row = CURSOR.execute(sql, (user_id,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
     @classmethod
     def instance_from_db(cls, row):
-        user = User.find_by_id(row[1])
-        coin = CryptoCoin.find_by_id(row[2])
-        portfolio = cls(user, coin, row[3], row[0])
-        return portfolio
+        user = cls(row[1], row[0])
+        return user

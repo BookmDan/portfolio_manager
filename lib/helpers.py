@@ -9,6 +9,18 @@ from models.transaction import Transaction
 console = Console()
 invalid = Style(color='magenta2', bold=True)
 
+def create_user():
+    print('')
+    username = input("Enter username: ")
+
+    try:
+        # Create a new user
+        user = User.create(username)
+        print('')
+        console.print(f"User '{user.username}' created successfully", style='green3')
+    except Exception as exc:
+        print('')
+        console.print(f"Error creating user: {exc}", style=invalid)
 
 def exit_program():
     console.print("See you next time! (On the moon ^^) ", style="dark_red on grey84 bold")
@@ -17,7 +29,7 @@ def exit_program():
 
 
 def add_user():
-    username = input("Enter the username for the new user: ")
+    username = input("Entered the username for the new user: ")
     try:
         User.create(username)
     except Exception as exc:
