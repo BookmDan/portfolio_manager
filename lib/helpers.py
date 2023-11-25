@@ -2,7 +2,7 @@
 from rich.console import Console
 from rich.style import Style
 from models import CURSOR, CONN
-from models.cryptocoin import CryptoCoin
+from models.portfolio import Portfolio
 from models.user import User
 from models.transaction import Transaction
 

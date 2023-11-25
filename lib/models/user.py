@@ -1,4 +1,5 @@
 from models.__init__ import CURSOR, CONN
+from models.portfolio import Portfolio
 
 class User:
 
@@ -85,8 +86,11 @@ class User:
             WHERE user_id = ?
         """
         rows = CURSOR.execute(sql, (self.id,)).fetchall()
-        for row in rows:
-            print(f"Portfolio ID: {row[0]}, User ID: {row[1]}, Coin ID: {row[2]}, Amount: {row[3]}")
+        if rows:
+            for row in rows:
+                print(f"Portfolio ID: {row[0]}, User ID: {row[1]}, Coin ID: {row[2]}, Amount: {row[3]}")
+        else:
+            print("This user has no portfolios.")
 
     @classmethod
     def find_by_id(cls, user_id):

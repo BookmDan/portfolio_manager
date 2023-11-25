@@ -1,7 +1,7 @@
 # crypto_model.py
 from models.__init__ import CURSOR, CONN
 
-class CryptoCoin:
+class Portfolio:
     def __init__(self, user_id, username):
         self.user_id = user_id
         self.username = username
