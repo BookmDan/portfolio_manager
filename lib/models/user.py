@@ -24,7 +24,7 @@ class User:
         CONN.commit()
 
     def __init__(self, user_id, username):
-        self.id = user_id
+        self.user_id = user_id
         self.username = username
         self.portfolios = []
 
@@ -69,17 +69,6 @@ class User:
             CURSOR.execute(sql, (user.user_id,))
             CONN.commit()
 
-    @classmethod
-    def display_all(cls):
-        cls.create_table()
-
-        sql = """
-            SELECT *
-            FROM users
-        """
-        rows = CURSOR.execute(sql).fetchall()
-        for row in rows:
-            print(f"User ID: {row[0]}, Username: {row[1]}")
 
     def view_portfolios(self):
         sql = """
@@ -109,6 +98,18 @@ class User:
         user = cls(row[0], row[1]) if row else None
         return user
     
+    @classmethod
+    def display_all(cls):
+        cls.create_table()
+
+        sql = """
+            SELECT *
+            FROM users
+        """
+        rows = CURSOR.execute(sql).fetchall()
+        for row in rows:
+            print(f"User ID: {row[0]}, Username: {row[1]}")
+
     def display_all_portfolios(self):
         sql = """
             SELECT *
@@ -125,14 +126,13 @@ class User:
     def create_portfolio(self, coin_symbol, amount):
         crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
 
-        if not crypto_coin:
-            crypto_coin = CryptoCoin.create(coin_symbol, 'Default Coin Name')
-        elif crypto_coin: 
+        if crypto_coin:
             portfolio = Portfolio.create(self, crypto_coin, amount)
             self.portfolios.append(portfolio)
             return portfolio
         else:
             raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
+
 
     @classmethod
     def find_by_id(cls, user_id):

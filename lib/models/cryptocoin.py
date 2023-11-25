@@ -22,13 +22,38 @@ class CryptoCoin:
         CURSOR.execute(sql)
         CONN.commit()
 
-    def __init__(self, coin_id, symbol, name):
+    def __init__(self, coin_id, symbol=None, name=None):
         self.coin_id = coin_id
         self.symbol = symbol
         self.name = name
 
     def __repr__(self):
         return f'<CryptoCoin {self.coin_id}: Symbol: {self.symbol}, Name: {self.name}>'
+
+    @classmethod
+    def insert_initial_data(cls):
+        coins_data = [
+            ("BTC", "Bitcoin"),
+            ("ETH", "Ethereum"),
+            ("LTC", "Litecoin"),
+            ("ETC", "Ethereum Classic"),
+            ("DOGE", "Dogecoin"),
+            ("LINK", "Chainlink"),
+            ("ADA", "Cardano"),
+            ("SOL", "Solana"),
+            ("XRP", "Ripple"),
+            ("USDT", "Tether"),
+            ("SHIB", "Shiba Inu"),
+            ("MATIC", "Polygon"),
+        ]
+
+        CURSOR.executemany("INSERT INTO crypto_coins (symbol, name) VALUES (?, ?)", coins_data)
+
+        CONN.commit()
+        coin_id = CURSOR.lastrowid
+
+        coin = cls(coin_id)
+        return coin
 
     @classmethod
     def create(cls, symbol, name):
@@ -75,11 +100,6 @@ class CryptoCoin:
         row = CURSOR.execute(sql, (coin_id,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
-    # @classmethod
-    # def instance_from_db(cls, row):
-    #     coin = cls(row[0], row[1], row[2])
-    #     return coin
-
     @classmethod
     def find_by_symbol(cls, symbol):
         sql = """
@@ -95,3 +115,4 @@ class CryptoCoin:
         return cls(row[0], row[1], row[2]) if row else None
     
 CryptoCoin.create_table()
+CryptoCoin.insert_initial_data()

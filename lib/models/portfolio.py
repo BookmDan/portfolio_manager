@@ -3,10 +3,16 @@ from models.__init__ import CURSOR, CONN
 
 
 class Portfolio:
-    def __init__(self, user_id, username):
-        self.user_id = user_id
-        self.username = username
-        self.portfolios = []
+    # def __init__(self, user_id, username):
+    #     self.user_id = user_id
+    #     self.username = username
+    #     self.portfolios = []
+
+    def __init__(self, portfolio_id, user, coin_symbol, amount):
+        self.portfolio_id = portfolio_id
+        self.user = user
+        self.coin_symbol = coin_symbol
+        self.amount = amount
 
     def __repr__(self):
         return f'<CryptoPortfolio {self.portfolio_id}: User: {self.user.username}, Coin: {self.coin_symbol}, Amount: {self.amount}>'
@@ -26,6 +32,24 @@ class Portfolio:
         CURSOR.execute(sql)
         CONN.commit()
 
+    def create_portfolio(self, coin_symbol, amount):
+        portfolio = CryptoPortfolio.create(self, coin_symbol, amount)
+        self.portfolios.append(portfolio)
+        return portfolio
+
+    @classmethod
+    def create(cls, user, crypto_coin, amount):
+        sql = """
+            INSERT INTO portfolios (user_id, crypto_coin_id, amount)
+            VALUES (?, ?, ?)
+        """
+        CURSOR.execute(sql, (user.id, crypto_coin.coin_id, amount))
+        CONN.commit()
+
+        portfolio_id = CURSOR.lastrowid
+        portfolio = cls(portfolio_id, user, crypto_coin ,amount)
+        return portfolio
+    
     @classmethod
     def drop_table(cls):
         sql = """
@@ -33,11 +57,6 @@ class Portfolio:
         """
         CURSOR.execute(sql)
         CONN.commit()
-
-    def create_portfolio(self, coin_symbol, amount):
-        portfolio = CryptoPortfolio.create(self, coin_symbol, amount)
-        self.portfolios.append(portfolio)
-        return portfolio
 
     @classmethod
     def delete_user_portfolios(cls, user_id):
@@ -67,21 +86,7 @@ class Portfolio:
         """
         rows = CURSOR.execute(sql).fetchall()
         return [row[0] for row in rows]
-    
-   
 
-    @classmethod
-    def create(cls, user, crypto_coin, amount):
-        sql = """
-            INSERT INTO users (username)
-            VALUES (?)
-        """
-        CURSOR.execute(sql, (user.user_id, crypto_coin.cryptocoin.id, amount))
-        CONN.commit()
-
-        portfolio_id = CURSOR.lastrowids
-        portfolio = cls(portfolio_id, user, crypto_coin ,amount)
-        return portfolio
 
     @classmethod
     def delete(cls, user):
