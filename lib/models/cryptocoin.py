@@ -57,10 +57,10 @@ class CryptoCoin:
         CURSOR.executemany("INSERT INTO crypto_coins (symbol, name) VALUES (?, ?)", coins_data)
 
         CONN.commit()
-        # coin_id = CURSOR.lastrowid
+        coin_id = CURSOR.lastrowid
 
-        # coin = cls(coin_id)
-        # return coin
+        coin = cls(coin_id)
+        return coin
 
     @classmethod
     def create(cls, symbol, name):
@@ -93,9 +93,10 @@ class CryptoCoin:
             SELECT *
             FROM crypto_coins
         """
-        rows = CURSOR.execute(sql).fetchall()
-        for row in rows:
-            print(f"CryptoCoin ID: {row[0]}, Symbol: {row[1]}, Name: {row[2]}")
+        with CONN, CONN.cursor() as cursor: 
+          rows = cursor.execute(sql).fetchall()
+          for row in rows:
+              print(f"CryptoCoin ID: {row[0]}, Symbol: {row[1]}, Name: {row[2]}")
 
     @classmethod
     def find_by_id(cls, coin_id):
@@ -121,5 +122,18 @@ class CryptoCoin:
     def instance_from_db(cls, row):
         return cls(row[0], row[1], row[2]) if row else None
     
+    @classmethod
+    def get_all_symbols(cls):
+        cls.create_table()
+
+        sql = """
+            SELECT symbol
+            FROM crypto_coins
+        """
+
+        # with CONN, CONN.cursor() as cursor:
+        rows = CURSOR.execute(sql).fetchall()
+        return [row[0] for row in rows]
+
 CryptoCoin.create_table()
 # CryptoCoin.insert_initial_data()

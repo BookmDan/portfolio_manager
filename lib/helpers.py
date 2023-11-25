@@ -144,8 +144,15 @@ def create_portfolio():
         print("User not found.")
 
 def view_coin_symbols():
-    print("All Coin Symbols:")
     coin_symbols = CryptoCoin.get_all_symbols()
 
-    for symbol in coin_symbols:
-        print(symbol)
+    if coin_symbols:
+        print("All Coin Symbols:")
+        for symbol in coin_symbols:
+            print(symbol)
+    else: 
+        print("No coing symbols found.")
+    # coin_symbols = CryptoCoin.get_all_symbols()
+
+    # for symbol in coin_symbols:
+    #     print(symbol)
