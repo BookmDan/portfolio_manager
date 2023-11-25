@@ -32,36 +32,47 @@ class CryptoCoin:
 
     @classmethod
     def insert_initial_data(cls):
-      sql = """
-        SELECT COUNT(*)
-        FROM crypto_coins
-      """
+      # sql = """
+      #   SELECT COUNT(*)
+      #   FROM crypto_coins
+      # """
+      coins_data = [
+        ("BTC", "Bitcoin"),
+        ("ETH", "Ethereum"),
+        ("LTC", "Litecoin"),
+        ("ETC", "Ethereum Classic"),
+        ("DOGE", "Dogecoin"),
+        ("LINK", "Chainlink"),
+        ("ADA", "Cardano"),
+        ("SOL", "Solana"),
+        ("XRP", "Ripple"),
+        ("USDT", "Tether"),
+        ("SHIB", "Shiba Inu"),
+        ("MATIC", "Polygon"),
+      ]
       # checks to make sure there is only one copy of each crypto
-      count = CURSOR.execute(sql).fetchone()[0]
-      if count == 0:
-        coins_data = [
-            ("BTC", "Bitcoin"),
-            ("ETH", "Ethereum"),
-            ("LTC", "Litecoin"),
-            ("ETC", "Ethereum Classic"),
-            ("DOGE", "Dogecoin"),
-            ("LINK", "Chainlink"),
-            ("ADA", "Cardano"),
-            ("SOL", "Solana"),
-            ("XRP", "Ripple"),
-            ("USDT", "Tether"),
-            ("SHIB", "Shiba Inu"),
-            ("MATIC", "Polygon"),
-        ]
+      for symbol, name in coins_data:
+          if not cls.coin_exists(symbol):
+              cls.create(symbol, name)
+      CONN.commit()
+        # CURSOR.executemany("INSERT INTO crypto_coins (symbol, name) VALUES (?, ?)", coins_data)
 
-        CURSOR.executemany("INSERT INTO crypto_coins (symbol, name) VALUES (?, ?)", coins_data)
+        # CONN.commit()
+        # coin_id = CURSOR.lastrowid
 
-        CONN.commit()
-        coin_id = CURSOR.lastrowid
+        # coin = cls(coin_id)
+        # return coin
 
-        coin = cls(coin_id)
-        return coin
-
+    @classmethod
+    def coin_exists(cls, symbol):
+      sql = """
+          SELECT COUNT(*)
+          FROM crypto_coins
+          WHERE symbol = ?
+      """
+      count = CURSOR.execute(sql, (symbol,)).fetchone()[0]
+      return count > 0
+    
     @classmethod
     def create(cls, symbol, name):
         sql = """
@@ -136,4 +147,4 @@ class CryptoCoin:
         return [row[0] for row in rows]
 
 CryptoCoin.create_table()
-# CryptoCoin.insert_initial_data()
+CryptoCoin.insert_initial_data()
