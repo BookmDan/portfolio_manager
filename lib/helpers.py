@@ -5,6 +5,7 @@ from models import CURSOR, CONN
 from models.portfolio import Portfolio
 from models.user import User
 from models.transaction import Transaction
+from models.cryptocoin import CryptoCoin
 
 console = Console()
 invalid = Style(color='magenta2', bold=True)

@@ -24,7 +24,7 @@ class User:
         CONN.commit()
 
     def __init__(self, user_id, username):
-        self.user_id = user_id
+        self.id = user_id
         self.username = username
         self.portfolios = []
 
@@ -94,11 +94,6 @@ class User:
         else:
             print("This user has no portfolios.")
 
-    # @classmethod
-    # def instance_from_db(cls, row):
-    #     user = cls(row[1], row[0])
-    #     return user
-
     @classmethod
     def find_by_id(cls, user_id):
         sql = """
@@ -113,12 +108,26 @@ class User:
     def instance_from_db(cls, row):
         user = cls(row[0], row[1]) if row else None
         return user
+    
+    def display_all_portfolios(self):
+        sql = """
+            SELECT *
+            FROM portfolios
+            WHERE user_id = ?
+        """
+        rows = CURSOR.execute(sql, (self.user_id,)).fetchall()
+        if rows:
+            for row in rows:
+                print(f"Portfolio ID: {row[0]}, Coin ID: {row[2]}, Amount: {row[3]}")
+        else:
+            print("This user has no portfolios.")
 
     def create_portfolio(self, coin_symbol, amount):
-        # Assuming you have a method to get the CryptoCoin instance by symbol
         crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
 
-        if crypto_coin:
+        if not crypto_coin:
+            crypto_coin = CryptoCoin.create(coin_symbol, 'Default Coin Name')
+        elif crypto_coin: 
             portfolio = Portfolio.create(self, crypto_coin, amount)
             self.portfolios.append(portfolio)
             return portfolio

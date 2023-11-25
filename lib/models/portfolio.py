@@ -9,7 +9,7 @@ class Portfolio:
         self.portfolios = []
 
     def __repr__(self):
-        return f'<Portfolio {self.portfolio_id}: Coin: {self.coin_symbol}, Amount: {self.amount}>'
+        return f'<CryptoPortfolio {self.portfolio_id}: User: {self.user.username}, Coin: {self.coin_symbol}, Amount: {self.amount}>'
 
     @classmethod
     def create_table(cls):
@@ -71,17 +71,17 @@ class Portfolio:
    
 
     @classmethod
-    def create(cls, username):
+    def create(cls, user, crypto_coin, amount):
         sql = """
             INSERT INTO users (username)
             VALUES (?)
         """
-        CURSOR.execute(sql, (username,))
+        CURSOR.execute(sql, (user.user_id, crypto_coin.cryptocoin.id, amount))
         CONN.commit()
 
-        user_id = CURSOR.lastrowid
-        user = cls(user_id, username)
-        return user
+        portfolio_id = CURSOR.lastrowids
+        portfolio = cls(portfolio_id, user, crypto_coin ,amount)
+        return portfolio
 
     @classmethod
     def delete(cls, user):
@@ -112,17 +112,6 @@ class Portfolio:
         """
         row = CURSOR.execute(sql, (user_id,)).fetchone()
         return cls(row[0], row[1]) if row else None
-
-    # @classmethod
-    # def find_by_id(cls, portfolio_id):
-    #     from models.user import User 
-    #     sql = """
-    #         SELECT *
-    #         FROM crypto_portfolios
-    #         WHERE portfolio_id = ?
-    #     """
-    #     row = CURSOR.execute(sql, (portfolio_id,)).fetchone()
-    #     return cls(row[0], User.find_by_id(row[1]), row[2], row[3]) if row else None
 
 class CryptoPortfolio:
     def __init__(self, portfolio_id, user, coin_symbol, amount):

@@ -75,10 +75,10 @@ class CryptoCoin:
         row = CURSOR.execute(sql, (coin_id,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
-    @classmethod
-    def instance_from_db(cls, row):
-        coin = cls(row[0], row[1], row[2])
-        return coin
+    # @classmethod
+    # def instance_from_db(cls, row):
+    #     coin = cls(row[0], row[1], row[2])
+    #     return coin
 
     @classmethod
     def find_by_symbol(cls, symbol):
@@ -89,5 +89,9 @@ class CryptoCoin:
         """
         row = CURSOR.execute(sql, (symbol,)).fetchone()
         return cls.instance_from_db(row) if row else None
+    
+    @classmethod
+    def instance_from_db(cls, row):
+        return cls(row[0], row[1], row[2]) if row else None
     
 CryptoCoin.create_table()

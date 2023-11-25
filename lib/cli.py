@@ -52,7 +52,7 @@ def display_all_users():
     User.display_all()
 
 def view_user_portfolios():
-    user_id = input("Enter user ID, (if you want to go back to Menu, press 'b'): ")
+    user_id = input("Enter user ID: ")
     user = User.find_by_id(user_id)
     if user:
         print(f"\nPortfolios for {user.username}:")
