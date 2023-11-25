@@ -106,3 +106,24 @@ class User:
     def instance_from_db(cls, row):
         user = cls(row[1], row[0])
         return user
+
+    def create_portfolio(self, coin_symbol, amount):
+        # Assuming you have a method to get the CryptoCoin instance by symbol
+        crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
+
+        if crypto_coin:
+            portfolio = Portfolio.create(self, crypto_coin, amount)
+            self.portfolios.append(portfolio)
+            return portfolio
+        else:
+            raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
+
+    @classmethod
+    def find_by_id(cls, user_id):
+        sql = """
+            SELECT *
+            FROM users
+            WHERE id = ?
+        """
+        row = CURSOR.execute(sql, (user_id,)).fetchone()
+        return cls.instance_from_db(row) if row else None

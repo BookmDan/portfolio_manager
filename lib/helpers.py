@@ -109,7 +109,6 @@ def update_user(user):
         user.username = tmp
         console.print("Error updating user: must enter a valid username", style=invalid)
 
-
 def delete_user(user):
     print('')
     console.print(f'Delete {user.username} and all its transactions? Enter y to confirm, anything else to cancel')
@@ -125,3 +124,17 @@ def delete_user(user):
         print('')
         console.print('User and transactions deleted', style='green3')
         return 1
+    
+def create_portfolio():
+    user_id = input("Enter user ID: ")
+    user = User.find_by_id(user_id)
+
+    if user:
+        coin_symbol = input("Enter coin symbol: ")
+        amount = float(input("Enter amount: "))
+
+        # Assuming create_portfolio is a method in your User class
+        user.create_portfolio(coin_symbol, amount)
+        print(f"Portfolio for {user.username} created successfully.")
+    else:
+        print("User not found.")
