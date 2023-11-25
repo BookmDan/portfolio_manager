@@ -1,4 +1,4 @@
-from models.crypto_model import CryptoCoin, Portfolio, Transaction
+from lib.models.cryptocoin import CryptoCoin, Portfolio, Transaction
 
 # Drop existing tables
 CryptoCoin.drop_table()

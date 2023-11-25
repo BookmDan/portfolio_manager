@@ -1,157 +1,115 @@
-from models.department import Department
-from models.employee import Employee
+# lib/helpers.py
+from rich.console import Console
+from rich.style import Style
+from models import CURSOR, CONN
+from models.cryptocoin import CryptoCoin
+from models.user import User
+from models.transaction import Transaction
+
+console = Console()
+invalid = Style(color='magenta2', bold=True)
 
 
 def exit_program():
-    print("Goodbye!")
+    console.print("See you next time! (On the moon ^^) ", style="dark_red on grey84 bold")
+    print('')
     exit()
 
-# We'll implement the department functions in this lesson
 
-
-def list_departments():
-    departments = Department.get_all()
-    for department in departments:
-        print(department)
-
-
-def find_department_by_name():
-    name = input("Enter the department's name: ")
-    department = Department.find_by_name(name)
-    print(department) if department else print(
-        f'Department {name} not found')
-
-
-def find_department_by_id():
-    # use a trailing underscore not to override the built-in id function
-    id_ = input("Enter the department's id: ")
-    department = Department.find_by_id(id_)
-    print(department) if department else print(f'Department {id_} not found')
-
-
-def create_department():
-    name = input("Enter the department's name: ")
-    location = input("Enter the department's location: ")
+def add_user():
+    username = input("Enter the username for the new user: ")
     try:
-        department = Department.create(name, location)
-        print(f'Success: {department}')
+        User.create(username)
     except Exception as exc:
-        print("Error creating department: ", exc)
+        print("Error creating user: ", exc)
 
 
-def update_department():
-    id_ = input("Enter the department's id: ")
-    if department := Department.find_by_id(id_):
+def user_list():
+    return User.display_all()
+
+
+def view_transactions(user):
+    transactions = user.transactions
+    print('')
+    if transactions:
+        print(f'Transactions for {user.username}:')
+        for i, transaction in enumerate(transactions):
+            console.print(i + 1, f"Coin: {transaction.coin_symbol}, Amount: {transaction.amount}", style='orange3')
+    else:
+        console.print(f'No transactions for {user.username}', style='orange3')
+    print('')
+    input('Press Enter to return to User Details')
+
+
+def add_transaction(user):
+    print('')
+    coin_symbol = input("Enter the symbol of the crypto coin for the new transaction: ")
+    amount = float(input("Enter the amount of the crypto coin: "))
+    try:
+        user.create_transaction(coin_symbol, amount)
+        print('')
+        console.print('Transaction created successfully', style='green3')
+    except Exception as exc:
+        print('')
+        console.print("Error creating transaction: ", exc, style=invalid)
+
+
+def remove_transaction(user):
+    transactions = user.transactions
+    print('')
+    if transactions:
+        print(f'Transactions for {user.username}:')
+        for i, transaction in enumerate(transactions):
+            console.print(i + 1, f"Coin: {transaction.coin_symbol}, Amount: {transaction.amount}", style='orange3')
+        print('')
+        choice = input("Enter the number for the transaction to delete: ")
+
         try:
-            name = input("Enter the department's new name: ")
-            department.name = name
-            location = input("Enter the department's new location: ")
-            department.location = location
-
-            department.update()
-            print(f'Success: {department}')
-        except Exception as exc:
-            print("Error updating department: ", exc)
+            picked_transaction = transactions[int(choice) - 1]
+            print('')
+            console.print(f"Delete transaction with Coin: {picked_transaction.coin_symbol} and Amount: {picked_transaction.amount}?"
+                          f" Enter y to confirm, anything else to cancel")
+            confirmation = input("> ")
+            if confirmation == 'y':
+                picked_transaction.delete()
+                print('')
+                console.print(f'Transaction deleted', style='green3')
+            else:
+                print('')
+                console.print('Action canceled', style='yellow')
+        except:
+            print("")
+            console.print(f"Invalid entry: {choice}", style=invalid, highlight=False)
     else:
-        print(f'Department {id_} not found')
+        console.print(f'No transactions for {user.username}', style='orange3')
 
 
-def delete_department():
-    id_ = input("Enter the department's id: ")
-    if department := Department.find_by_id(id_):
-        department.delete()
-        print(f'Department {id_} deleted')
+def update_user(user):
+    print('')
+    tmp = user.username
+    try:
+        username = input('Enter the username for the updated user: ')
+        user.username = username
+        user.update()
+        print('')
+        console.print('Update successful', style='green3')
+    except Exception as exc:
+        user.username = tmp
+        console.print("Error updating user: must enter a valid username", style=invalid)
+
+
+def delete_user(user):
+    print('')
+    console.print(f'Delete {user.username} and all its transactions? Enter y to confirm, anything else to cancel')
+    confirm = input("> ")
+    if confirm != 'y':
+        print('')
+        console.print('Action canceled', style='yellow')
+        return 0
     else:
-        print(f'Department {id_} not found')
-
-
-# You'll implement the employee functions in the lab
-
-def list_employees():
-    pass
-
-
-def find_employee_by_name():
-    pass
-
-
-def find_employee_by_id():
-    pass
-
-
-def create_employee():
-    pass
-
-
-def update_employee():
-    try:
-        employee_id = input("Enter the employee id: ")
-
-        if not employee_exists_in_database(employee_id):
-            print("Error: Employee not found in the database.")
-            return
-        new_name = input("Enter the new name: ")
-
-        # Prompt for a new job title
-        new_job_title = input("Enter the new job title: ")
-
-        # Prompt for the employee's new department id
-        new_department_id = input("Enter the new department id: ")
-
-        # Update the employee in the database
-        update_employee_in_database(employee_id, new_name, new_job_title, new_department_id)
-
-        # Print a success message
-        print("Employee information updated successfully.")
-
-    except Exception as e:
-        # Print an error message if an exception is thrown
-        print(f"Error: {e}")
-
-
-def delete_employee():
-    try:
-        # Prompt for and read in the employee id
-        employee_id = input("Enter the employee id: ")
-
-        # Check if the employee is in the database
-        if employee_exists_in_database(employee_id):
-            # Delete the employee from the database
-            delete_employee_from_database(employee_id)
-
-            # Print a confirmation message
-            print(f"Employee with ID {employee_id} deleted successfully.")
-        else:
-            # Print an error message if the employee is not in the database
-            print("Error: Employee not found in the database.")
-
-    except Exception as e:
-        # Print an error message if an exception is thrown
-        print(f"Error: {e}")
-
-
-
-def list_department_employees():
-    try:
-        # Prompt for and read in the department id
-        department_id = input("Enter the department id: ")
-
-        # Find the department with the given id from the database
-        department = get_department_by_id(department_id)
-
-        # Check if the department exists in the database
-        if department:
-            # Get the department's employees using the employees() instance method
-            department_employees = department.employees()
-
-            # Loop to print each employee's data on a separate line
-            for employee in department_employees:
-                print_employee_data(employee)
-
-        else:
-            # Print an error message if the department does not exist in the database
-            print("Error: Department not found in the database.")
-
-    except Exception as e:
-        # Print an error message if an exception is thrown
-        print(f"Error: {e}")
+        for transaction in user.transactions:
+            transaction.delete()
+        user.delete()
+        print('')
+        console.print('User and transactions deleted', style='green3')
+        return 1
