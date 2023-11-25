@@ -2,7 +2,7 @@
 from rich.style import Style
 from rich.console import Console
 from models.user import User
-from helpers import exit_program, create_user, add_user
+from helpers import exit_program, add_user, view_coin_symbols, delete_user_by_id
 
 console = Console()
 
@@ -12,17 +12,20 @@ def main():
         choice = input("> ")
         if choice == "1":
             add_user()
-            # create_user()
         elif choice == "2":
             display_all_users()
         elif choice == "3":
-            view_user_portfolios()
+            delete_user_by_id()
         elif choice == "4":
-            create_portfolio()
+            view_user_portfolios()
         elif choice == "5":
-            delete_portfolio()
+            create_portfolio()
         elif choice == "6":
+            delete_portfolio()
+        elif choice == "7":
             find_portfolio_by_symbol()
+        elif choice == "8":
+            view_coin_symbols()
         elif choice.lower() == 'x':
             exit_program()
         else:
@@ -35,23 +38,21 @@ def menu():
 
     print("1. Create User")
     print("2. Display All Users")
-    print("3. View User's Portfolios")
-    print("4. Create Portfolio for User")
-    print("5. Delete Portfolio for User")
-    print("6. Find Portfolio by Coin Symbol")
+    print("3. Delete User")
+    print("4. View User's Portfolios")
+    print("5. Create Portfolio for User")
+    print("6. Delete Portfolio for User")
+    print("7. Find Portfolio by Coin Symbol")
+    print("8. View All Coin Symbols")
+    # console.print(f"7. View All Coin Symbols ", style='green3')
     print("Enter x to exit the program")
-
-def create_user():
-    username = input("Enter username: ")
-    User.create(username)
-    print(f"User {username} created successfully.")
 
 def display_all_users():
     print("All Users:")
     User.display_all()
 
 def view_user_portfolios():
-    user_id = input("Enter user ID: (if you want to go back to Menu, press 'b')")
+    user_id = input("Enter user ID, (if you want to go back to Menu, press 'b'): ")
     user = User.find_by_id(user_id)
     if user:
         print(f"\nPortfolios for {user.username}:")
@@ -100,6 +101,4 @@ def find_portfolio_by_symbol():
 if __name__ == "__main__":
     print("")
     console.print(" Welcome to YourCryptoPortfolio! ", style = "dark_green on white bold")
-    print("")
-    main()
     main()

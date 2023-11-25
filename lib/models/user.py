@@ -1,5 +1,6 @@
 from models.__init__ import CURSOR, CONN
 from models.portfolio import Portfolio
+from models.cryptocoin import CryptoCoin
 
 class User:
 
@@ -25,10 +26,10 @@ class User:
     def __init__(self, user_id, username):
         self.user_id = user_id
         self.username = username
-        # self.portfolios = []
+        self.portfolios = []
 
     def __repr__(self):
-        return f'<User {self.id}: Username: {self.username}>'
+        return f'<User {self.user_id}: Username: {self.username}>'
 
     @property
     def username(self):
@@ -55,16 +56,17 @@ class User:
             user = cls(user_id, username)
             return user
         else:
-            raise ValueError("Username msut be a non-empty string")
+            raise ValueError("Username must be a non-empty string")
 
     @classmethod
-    def delete(cls, user):
-        if user.id:
+    def delete(self, user):
+        if user and user.user_id:
+            Portfolio.delete_user_portfolios(user.user_id)
             sql = """
                 DELETE FROM users
                 WHERE id = ?
             """
-            CURSOR.execute(sql, (user.id,))
+            CURSOR.execute(sql, (user.user_id,))
             CONN.commit()
 
     @classmethod
@@ -92,6 +94,11 @@ class User:
         else:
             print("This user has no portfolios.")
 
+    # @classmethod
+    # def instance_from_db(cls, row):
+    #     user = cls(row[1], row[0])
+    #     return user
+
     @classmethod
     def find_by_id(cls, user_id):
         sql = """
@@ -101,10 +108,9 @@ class User:
         """
         row = CURSOR.execute(sql, (user_id,)).fetchone()
         return cls.instance_from_db(row) if row else None
-
-    @classmethod
+    
     def instance_from_db(cls, row):
-        user = cls(row[1], row[0])
+        user = cls(row[0], row[1]) if row else None
         return user
 
     def create_portfolio(self, coin_symbol, amount):
@@ -127,3 +133,5 @@ class User:
         """
         row = CURSOR.execute(sql, (user_id,)).fetchone()
         return cls.instance_from_db(row) if row else None
+    
+User.create_table()

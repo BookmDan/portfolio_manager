@@ -9,32 +9,35 @@ from models.transaction import Transaction
 console = Console()
 invalid = Style(color='magenta2', bold=True)
 
-def create_user():
-    print('')
-    username = input("Enter username: ")
-
-    try:
-        # Create a new user
-        user = User.create(username)
-        print('')
-        console.print(f"User '{user.username}' created successfully", style='green3')
-    except Exception as exc:
-        print('')
-        console.print(f"Error creating user: {exc}", style=invalid)
-
 def exit_program():
     console.print("See you next time! (On the moon ^^) ", style="dark_red on grey84 bold")
     print('')
     exit()
 
-
 def add_user():
-    username = input("Entered the username for the new user: ")
+    print('')
+    username = input("Enter username: ")
     try:
         User.create(username)
+        console.print(f"User '{username}' created successfully", style='green3')
     except Exception as exc:
+        print('')
         print("Error creating user: ", exc)
 
+def delete_user_by_id():
+    print('')
+    user_id = input("Enter ID of the user you want to delete: ")
+    user= User.find_by_id(user_id)
+    if user:
+        try:
+            User.delete(user)
+            console.print(f"User '{user.username}' deleted successfully", style='green3')
+        except Exception as exc:
+            print('')
+            print("Error deleting user: ", exc)
+    else: 
+        print('')
+        console.print("User not found.", style=invalid)
 
 def user_list():
     return User.display_all()
@@ -138,3 +141,10 @@ def create_portfolio():
         print(f"Portfolio for {user.username} created successfully.")
     else:
         print("User not found.")
+
+def view_coin_symbols():
+    print("All Coin Symbols:")
+    coin_symbols = CryptoCoin.get_all_symbols()
+
+    for symbol in coin_symbols:
+        print(symbol)

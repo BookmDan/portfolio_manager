@@ -1,23 +1,53 @@
 # crypto_model.py
 from models.__init__ import CURSOR, CONN
 
+
 class Portfolio:
     def __init__(self, user_id, username):
         self.user_id = user_id
         self.username = username
         self.portfolios = []
 
+    def __repr__(self):
+        return f'<Portfolio {self.portfolio_id}: Coin: {self.coin_symbol}, Amount: {self.amount}>'
+
+    @classmethod
+    def create_table(cls):
+        sql = """
+            CREATE TABLE IF NOT EXISTS portfolios (
+                id INTEGER PRIMARY KEY,
+                user_id INTEGER,
+                crypto_coin_id INTEGER,
+                amount REAL,
+                FOREIGN KEY (user_id) REFERENCES users (id),
+                FOREIGN KEY (crypto_coin_id) REFERENCES crypto_coins (id)
+            )
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
+
+    @classmethod
+    def drop_table(cls):
+        sql = """
+            DROP TABLE IF EXISTS portfolios
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
+
     def create_portfolio(self, coin_symbol, amount):
         portfolio = CryptoPortfolio.create(self, coin_symbol, amount)
         self.portfolios.append(portfolio)
         return portfolio
 
-    def delete_portfolio(self, portfolio):
-        if portfolio in self.portfolios:
-            portfolio.delete()
-            self.portfolios.remove(portfolio)
-            return True
-        return False
+    @classmethod
+    def delete_user_portfolios(cls, user_id):
+        sql = """
+            DELETE FROM portfolios
+            WHERE user_id = ?
+        """
+        CURSOR.execute(sql, (user_id,))
+        CONN.commit()
+
 
     def display_all_portfolios(self):
         for portfolio in self.portfolios:
@@ -28,6 +58,17 @@ class Portfolio:
             if portfolio.coin_symbol == coin_symbol:
                 return portfolio
         return None
+
+    @classmethod
+    def get_all_symbols(cls):
+        sql = """
+            SELECT DISTINCT crypto_coin_id
+            FROM portfolios
+        """
+        rows = CURSOR.execute(sql).fetchall()
+        return [row[0] for row in rows]
+    
+   
 
     @classmethod
     def create(cls, username):
@@ -63,6 +104,7 @@ class Portfolio:
 
     @classmethod
     def find_by_id(cls, user_id):
+        from models.user import User 
         sql = """
             SELECT *
             FROM users
@@ -71,6 +113,16 @@ class Portfolio:
         row = CURSOR.execute(sql, (user_id,)).fetchone()
         return cls(row[0], row[1]) if row else None
 
+    # @classmethod
+    # def find_by_id(cls, portfolio_id):
+    #     from models.user import User 
+    #     sql = """
+    #         SELECT *
+    #         FROM crypto_portfolios
+    #         WHERE portfolio_id = ?
+    #     """
+    #     row = CURSOR.execute(sql, (portfolio_id,)).fetchone()
+    #     return cls(row[0], User.find_by_id(row[1]), row[2], row[3]) if row else None
 
 class CryptoPortfolio:
     def __init__(self, portfolio_id, user, coin_symbol, amount):
@@ -109,13 +161,3 @@ class CryptoPortfolio:
         rows = CURSOR.execute(sql).fetchall()
         for row in rows:
             print(f"Portfolio ID: {row[0]}, Coin: {row[2]}, Amount: {row[3]}, User ID: {row[1]}")
-
-    @classmethod
-    def find_by_id(cls, portfolio_id):
-        sql = """
-            SELECT *
-            FROM crypto_portfolios
-            WHERE portfolio_id = ?
-        """
-        row = CURSOR.execute(sql, (portfolio_id,)).fetchone()
-        return cls(row[0], User.find_by_id(row[1]), row[2], row[3]) if row else None
