@@ -76,12 +76,12 @@ def create_portfolio():
 
 def delete_portfolio():
     user_id = input("Enter user ID: ")
-    user = User.find_by_id(user_id)
-    if user:
+    user_instance = User.find_by_id(user_id)
+    if user_instance:
         portfolio_id = input("Enter portfolio ID: ")
-        portfolio = user.find_portfolio_by_id(portfolio_id)
+        portfolio = user_instance.find_portfolio_by_id(portfolio_id)
         if portfolio:
-            user.delete_portfolio(portfolio)
+            user_instance.delete_portfolio(portfolio)
             print("Portfolio deleted successfully.")
         else:
             print("Portfolio not found.")

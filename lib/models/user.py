@@ -69,6 +69,15 @@ class User:
             CURSOR.execute(sql, (user.user_id,))
             CONN.commit()
 
+    @classmethod
+    def delete_portfolio(cls, portfolio):
+        sql = """
+            DELETE FROM portfolios
+            WHERE user_id = ? AND id =? 
+        """
+        CURSOR.execute(sql, (portfolio.user_id, portfolio.portfolio_id))
+        CONN.commit()
+
 
     def view_portfolios(self):
         sql = """
@@ -173,4 +182,17 @@ class User:
         row = CURSOR.execute(sql, (user_id,)).fetchone()
         return cls.instance_from_db(row) if row else None
     
+    def find_portfolio_by_id(self, portfolio_id):
+        sql = """
+            SELECT *
+            FROM portfolios
+            WHERE user_id = ? AND id = ?
+        """
+        row = CURSOR.execute(sql, (self.user_id, portfolio_id)).fetchone()
+        if row:
+            return Portfolio(row[0], row[1], row[2], row[3])
+        else:
+            return None
+    
+
 User.create_table()
