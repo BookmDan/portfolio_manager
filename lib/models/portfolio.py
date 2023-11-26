@@ -8,10 +8,10 @@ class Portfolio:
     #     self.username = username
     #     self.portfolios = []
 
-    def __init__(self, portfolio_id, user_id,  crypto_coin_id, coin_symbol, amount):
+    def __init__(self, portfolio_id, user_id, coin_symbol, amount):
         self.portfolio_id = portfolio_id
         self.user_id = user_id # this was the damn issue, I had self.user = user... 
-        self.crypto_coin_id = crypto_coin_id
+        # self.crypto_coin_id = crypto_coin_id
         self.coin_symbol = coin_symbol
         self.amount = amount
 

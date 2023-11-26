@@ -144,16 +144,16 @@ class CryptoCoin:
     
     @classmethod
     def find_crypto_id_by_symbol(cls, coin_symbol):
-        print("Debug: Coin symbol before SQL execution:", coin_symbol)
+        # print("Debug: Coin symbol before SQL execution:", coin_symbol)
         sql = """
             SELECT id
             FROM crypto_coins
             WHERE LOWER(symbol) = LOWER(?)
         """
         row = CURSOR.execute(sql, (coin_symbol,)).fetchone()
-        print("Debug: Row from the database:", row)
+        # print("Debug: Row from the database:", row)
         crypto_id = row[0] if row else None
-        print("Debug: Row from the database:", row)
+        # print("Debug: Row from the database:", row)
         return crypto_id
     
     @classmethod

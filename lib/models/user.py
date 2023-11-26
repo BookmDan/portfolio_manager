@@ -166,7 +166,7 @@ class User:
                 WHERE user_id = ? AND crypto_coin_id = ?
             """
             row = CURSOR.execute(sql, (user_id, crypto_coin_id)).fetchone()
-            print("Debug: Row from the database:", row) 
+            # print("Debug: Row from the database:", row) 
 
             if row is not None:
                 return Portfolio(*row)
