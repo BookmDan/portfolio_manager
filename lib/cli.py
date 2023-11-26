@@ -23,8 +23,10 @@ def main():
         elif choice == "6":
             delete_portfolio()
         elif choice == "7":
-            find_portfolio_by_symbol()
+            view_all_portfolios()
         elif choice == "8":
+            find_portfolio_by_symbol()
+        elif choice == "9":
             view_coin_symbols()
         elif choice.lower() == 'x':
             exit_program()
@@ -42,8 +44,9 @@ def menu():
     print("4. View User's Portfolios")
     print("5. Create Portfolio for User")
     print("6. Delete Portfolio for User")
-    print("7. Find Portfolio by Coin Symbol")
-    print("8. View All Coin Symbols")
+    print("7. View All Portfolios")
+    print("8. Find Portfolio by Coin Symbol")
+    print("9. View All Coin Symbols")
     # console.print(f"7. View All Coin Symbols ", style='green3')
     print("Enter x to exit the program")
 
@@ -56,7 +59,7 @@ def view_user_portfolios():
     user = User.find_by_id(user_id)
     if user:
         print(f"\nPortfolios for {user.username}:")
-        user.display_all_portfolios()
+        user.display_portfolios_by_user()
     else:
         print("User not found.")
 
@@ -97,6 +100,10 @@ def find_portfolio_by_symbol():
             print("Portfolio not found.")
     else:
         print("User not found.")
+
+def view_all_portfolios():
+    User.display_all_portfolios()
+
 
 if __name__ == "__main__":
     print("")

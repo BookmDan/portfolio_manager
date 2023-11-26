@@ -110,7 +110,20 @@ class User:
         for row in rows:
             print(f"User ID: {row[0]}, Username: {row[1]}")
 
-    def display_all_portfolios(self):
+    @staticmethod
+    def display_all_portfolios():
+        sql = """
+            SELECT *
+            FROM portfolios
+        """
+        rows = CURSOR.execute(sql).fetchall()
+        if rows:
+            for row in rows:
+                print(f"User ID: {row[1]}, Portfolio ID: {row[0]}, Coin ID: {row[2]}, Amount: {row[3]}")
+        else:
+            print("No portfolios found.")
+
+    def display_portfolios_by_user(self):
         sql = """
             SELECT *
             FROM portfolios
@@ -121,7 +134,7 @@ class User:
             for row in rows:
                 print(f"Portfolio ID: {row[0]}, Coin ID: {row[2]}, Amount: {row[3]}")
         else:
-            print("This user has no portfolios.")
+            print("No portfolios found for this user.")
 
     def create_portfolio(self, coin_symbol, amount):
         crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
@@ -133,7 +146,23 @@ class User:
         else:
             raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
 
+    def find_portfolio_by_symbol(self, coin_symbol):
+        sql = """
+            SELECT portfolios.id, portfolios.crypto_coin_id, portfolios.amount
+            FROM portfolios
+            JOIN crypto_coins ON portfolios.crypto_coin_id = crypto_coins.id
+            WHERE user_id = ? AND crypto_coins.symbol = ?
+        """
+        row = CURSOR.execute(sql, (self.user_id, coin_symbol)).fetchone()
 
+        if not row:
+            print(f"No portfolio found for {coin_symbol}.")
+            return None
+
+        return Portfolio(*row)
+        # portfolios = [Portfolio(*row) for row in rows]
+        # return portfolios
+    
     @classmethod
     def find_by_id(cls, user_id):
         sql = """
