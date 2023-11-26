@@ -11,7 +11,7 @@ console = Console()
 invalid = Style(color='magenta2', bold=True)
 
 def exit_program():
-    console.print("See you next time! (On the moon ^^) ", style="dark_red on grey84 bold")
+    console.print("See you next time! (On the moon ^^) ", style="blue3 on grey84 bold")
     print('')
     exit()
 
@@ -32,7 +32,7 @@ def delete_user_by_id():
     if user:
         try:
             User.delete(user)
-            console.print(f"User '{user.username}' deleted successfully", style='green3')
+            console.print(f"User '{user.username}' deleted successfully", style='red')
         except Exception as exc:
             print('')
             print("Error deleting user: ", exc)
