@@ -11,6 +11,8 @@
 Run `pipenv install` to create your virtual environment and `pipenv shell` to
 enter the virtual environment.
 
+Type in 'python lib/cli.py' to start the main menu. 
+
 <div>
     <a href="https://www.loom.com/embed/b7fe7433847c4251b81ea09a994e1b44?sid=76936476-e243-4425-b3e1-d7147c24e307">
       <p>Command Line Crypto Portfolio - Watch Video</p>
