@@ -70,7 +70,7 @@ Please select an option:
 1. Create User
 2. Display All Users
 3. Delete User
-4. View User's Portfolios
+4. View User\'s Portfolios
 5. Create Portfolio for User
 6. Delete Portfolio for User
 7. View All Portfolios
