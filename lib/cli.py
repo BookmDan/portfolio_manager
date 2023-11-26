@@ -67,10 +67,10 @@ def create_portfolio():
     user_id = input("Enter user ID: ")
     user = User.find_by_id(user_id)
     if user:
-        coin_symbol = input("Enter coin symbol: ")
+        coin_symbol = input("Enter coin symbol: ").upper()
         amount = float(input("Enter amount: "))
         user.create_portfolio(coin_symbol, amount)
-        print(f"Portfolio for {user.username} created successfully.")
+        print(f"Portfolio for {user.username} created successfully.", style='green3')
     else:
         print("User not found.")
 
@@ -82,7 +82,7 @@ def delete_portfolio():
         portfolio = user_instance.find_portfolio_by_id(portfolio_id)
         if portfolio:
             user_instance.delete_portfolio(portfolio)
-            print("Portfolio deleted successfully.")
+            print(f"Portfolio deleted successfully.", style='red3')
         else:
             print("Portfolio not found.")
     else:
