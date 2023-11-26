@@ -11,10 +11,7 @@
 Run `pipenv install` to create your virtual environment and `pipenv shell` to
 enter the virtual environment.
 
-We'll continue to add a command line interface to the company ORM application
-from the previous lesson:
-
-![company erd](https://curriculum-content.s3.amazonaws.com/7134/python-p3-v2-orm/department_employee_erd.png)
+<div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/b7fe7433847c4251b81ea09a994e1b44?sid=76936476-e243-4425-b3e1-d7147c24e307" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
 
 The directory structure is as follows:
 
