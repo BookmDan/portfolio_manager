@@ -1,6 +1,6 @@
-from models.__init__ import CURSOR, CONN
-from models.portfolio import Portfolio
-from models.cryptocoin import CryptoCoin
+from .__init__ import CURSOR, CONN
+from .portfolio import Portfolio
+from .cryptocoin import CryptoCoin
 
 class User:
 
@@ -155,22 +155,28 @@ class User:
         else:
             raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
 
-    def find_portfolio_by_symbol(self, coin_symbol):
-        crypto_coin_id = find_crypto_id_by_symbol(coin_symbol)
-        if crypto_coin_id is not None: 
-            sql = """
-                SELECT portfolios.id, portfolios.crypto_coin_id, portfolios.amount
-                FROM portfolios
-                JOIN crypto_coins ON portfolios.crypto_coin_id = crypto_coins.id
-                WHERE user_id = ? AND crypto_coins.symbol = ?
-            """
-        row = CURSOR.execute(sql, (self.user_id, coin_symbol)).fetchone()
+    @classmethod
+    def find_portfolio_by_symbol(cls, user_id, coin_symbol):
+        crypto_coin_id = CryptoCoin.find_crypto_id_by_symbol(coin_symbol)
 
-        if not row: 
-            print(f"No portfolio found for {coin_symbol}.")
-            return None
-        return Portfolio(*row)
-          
+        if crypto_coin_id is not None:
+            sql = """
+                SELECT id, user_id, crypto_coin_id, amount
+                FROM portfolios
+                WHERE user_id = ? AND crypto_coin_id = ?
+            """
+            row = CURSOR.execute(sql, (user_id, crypto_coin_id)).fetchone()
+            print("Debug: Row from the database:", row) 
+
+            if row is not None:
+                return Portfolio(*row)
+            else:
+                print(f"No portfolio found for {coin_symbol}.")
+        else:
+            print(f"No crypto coin found for symbol {coin_symbol}.")
+
+        return None
+
 
     @classmethod
     def find_by_id(cls, user_id):
@@ -196,3 +202,4 @@ class User:
     
 
 User.create_table()
+# User.find_portfolio_by_symbol(user_id=13, coin_symbol='BTC')

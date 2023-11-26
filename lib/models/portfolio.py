@@ -8,9 +8,10 @@ class Portfolio:
     #     self.username = username
     #     self.portfolios = []
 
-    def __init__(self, portfolio_id, user_id, coin_symbol, amount):
+    def __init__(self, portfolio_id, user_id,  crypto_coin_id, coin_symbol, amount):
         self.portfolio_id = portfolio_id
         self.user_id = user_id # this was the damn issue, I had self.user = user... 
+        self.crypto_coin_id = crypto_coin_id
         self.coin_symbol = coin_symbol
         self.amount = amount
 
@@ -71,12 +72,6 @@ class Portfolio:
     def display_all_portfolios(self):
         for portfolio in self.portfolios:
             print(f"Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
-
-    def find_portfolio_by_symbol(self, coin_symbol):
-        for portfolio in self.portfolios:
-            if portfolio.coin_symbol.lower() == coin_symbol.lower():
-                return portfolio
-        return None
 
     @classmethod
     def get_all_symbols(cls):
