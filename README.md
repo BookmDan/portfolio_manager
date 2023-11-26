@@ -20,6 +20,9 @@ enter the virtual environment.
     </a>
 </div>
 
+Phase 3 Crypto Project - Watch Video
+
+
 <div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/b7fe7433847c4251b81ea09a994e1b44?sid=76936476-e243-4425-b3e1-d7147c24e307" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
 
 The directory structure is as follows:
