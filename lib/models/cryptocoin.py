@@ -32,36 +32,36 @@ class CryptoCoin:
 
     @classmethod
     def insert_initial_data(cls):
-      # sql = """
-      #   SELECT COUNT(*)
-      #   FROM crypto_coins
-      # """
-      coins_data = [
-        ("BTC", "Bitcoin"),
-        ("ETH", "Ethereum"),
-        ("LTC", "Litecoin"),
-        ("ETC", "Ethereum Classic"),
-        ("DOGE", "Dogecoin"),
-        ("LINK", "Chainlink"),
-        ("ADA", "Cardano"),
-        ("SOL", "Solana"),
-        ("XRP", "Ripple"),
-        ("USDT", "Tether"),
-        ("SHIB", "Shiba Inu"),
-        ("MATIC", "Polygon"),
-      ]
-      # checks to make sure there is only one copy of each crypto
-      for symbol, name in coins_data:
-          if not cls.coin_exists(symbol):
-              cls.create(symbol, name)
-      CONN.commit()
-        # CURSOR.executemany("INSERT INTO crypto_coins (symbol, name) VALUES (?, ?)", coins_data)
+      sql = """
+        SELECT COUNT(*)
+        FROM crypto_coins
+      """
+      count = CURSOR.execute(sql).fetchone()[0]
+      if count == 0: 
+        coins_data = [
+          ("BTC", "Bitcoin"),
+          ("ETH", "Ethereum"),
+          ("LTC", "Litecoin"),
+          ("ETC", "Ethereum Classic"),
+          ("DOGE", "Dogecoin"),
+          ("LINK", "Chainlink"),
+          ("ADA", "Cardano"),
+          ("SOL", "Solana"),
+          ("XRP", "Ripple"),
+          ("USDT", "Tether"),
+          ("SHIB", "Shiba Inu"),
+          ("MATIC", "Polygon"),
+        ]
+        CURSOR.executemany("INSERT INTO crypto_coins (symbol, name) VALUES (?, ?)", coins_data)
 
-        # CONN.commit()
-        # coin_id = CURSOR.lastrowid
-
-        # coin = cls(coin_id)
-        # return coin
+        CONN.commit()
+        coin_id = CURSOR.lastrowid
+        coin = cls.find_by_id(coin_id)  
+        print("Initial data inserted successfully.")
+        return coin
+      else:
+        print("Data already exists. No need to insert initial data.")
+        return None
 
     @classmethod
     def coin_exists(cls, symbol):
@@ -104,10 +104,23 @@ class CryptoCoin:
             SELECT *
             FROM crypto_coins
         """
-        with CONN, CONN.cursor() as cursor: 
-          rows = cursor.execute(sql).fetchall()
-          for row in rows:
-              print(f"CryptoCoin ID: {row[0]}, Symbol: {row[1]}, Name: {row[2]}")
+        # with CONN, CONN.cursor() as cursor: 
+        rows = CURSOR.execute(sql).fetchall()
+        for row in rows:
+            print(f"CryptoCoin ID: {row[0]}, Symbol: {row[1]}, Name: {row[2]}")
+
+    @classmethod
+    def get_all_symbols(cls):
+        cls.create_table()
+
+        sql = """
+            SELECT symbol
+            FROM crypto_coins
+        """
+
+        # with CONN, CONN.cursor() as cursor:
+        rows = CURSOR.execute(sql).fetchall()
+        return [row[0] for row in rows]
 
     @classmethod
     def find_by_id(cls, coin_id):
@@ -134,17 +147,34 @@ class CryptoCoin:
         return cls(row[0], row[1], row[2]) if row else None
     
     @classmethod
-    def get_all_symbols(cls):
-        cls.create_table()
-
-        sql = """
-            SELECT symbol
+    def clean_crypto_db(cls):
+        #identify duplicate symbols
+        duplicate_symbols_query = """
+            SELECT symbol, COUNT(*)
             FROM crypto_coins
+            GROUP BY symbol
+            HAVING COUNT(*) > 1
         """
+        duplicate_symbols = CURSOR.execute(duplicate_symbols_query).fetchall()
 
-        # with CONN, CONN.cursor() as cursor:
-        rows = CURSOR.execute(sql).fetchall()
-        return [row[0] for row in rows]
+        if not duplicate_symbols:
+            print("No duplicate symbols found.")
+            return
+
+        # delete duplicate rows
+        delete_query = """
+            DELETE FROM crypto_coins
+            WHERE id NOT IN (
+                SELECT MIN(id)
+                FROM crypto_coins
+                GROUP BY symbol
+            )
+        """
+        CURSOR.execute(delete_query)
+        CONN.commit()
+
+        print("Duplicate rows deleted.")
 
 CryptoCoin.create_table()
 CryptoCoin.insert_initial_data()
+CryptoCoin.clean_crypto_db()
