@@ -156,22 +156,22 @@ class User:
             raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
 
     def find_portfolio_by_symbol(self, coin_symbol):
-        sql = """
-            SELECT portfolios.id, portfolios.crypto_coin_id, portfolios.amount
-            FROM portfolios
-            JOIN crypto_coins ON portfolios.crypto_coin_id = crypto_coins.id
-            WHERE user_id = ? AND crypto_coins.symbol = ?
-        """
+        crypto_coin_id = find_crypto_id_by_symbol(coin_symbol)
+        if crypto_coin_id is not None: 
+            sql = """
+                SELECT portfolios.id, portfolios.crypto_coin_id, portfolios.amount
+                FROM portfolios
+                JOIN crypto_coins ON portfolios.crypto_coin_id = crypto_coins.id
+                WHERE user_id = ? AND crypto_coins.symbol = ?
+            """
         row = CURSOR.execute(sql, (self.user_id, coin_symbol)).fetchone()
 
-        if not row:
+        if not row: 
             print(f"No portfolio found for {coin_symbol}.")
             return None
-
         return Portfolio(*row)
-        # portfolios = [Portfolio(*row) for row in rows]
-        # return portfolios
-    
+          
+
     @classmethod
     def find_by_id(cls, user_id):
         sql = """

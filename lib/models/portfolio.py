@@ -74,7 +74,7 @@ class Portfolio:
 
     def find_portfolio_by_symbol(self, coin_symbol):
         for portfolio in self.portfolios:
-            if portfolio.coin_symbol == coin_symbol:
+            if portfolio.coin_symbol.lower() == coin_symbol.lower():
                 return portfolio
         return None
 
