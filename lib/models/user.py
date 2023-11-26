@@ -157,25 +157,30 @@ class User:
 
     @classmethod
     def find_portfolio_by_symbol(cls, user_id, coin_symbol):
-        crypto_coin_id = CryptoCoin.find_crypto_id_by_symbol(coin_symbol)
+        portfolios = []
 
+        crypto_coin_id = CryptoCoin.find_crypto_id_by_symbol(coin_symbol)
         if crypto_coin_id is not None:
             sql = """
                 SELECT id, user_id, crypto_coin_id, amount
                 FROM portfolios
                 WHERE user_id = ? AND crypto_coin_id = ?
             """
-            row = CURSOR.execute(sql, (user_id, crypto_coin_id)).fetchone()
+            rows = CURSOR.execute(sql, (user_id, crypto_coin_id)).fetchall()
             # print("Debug: Row from the database:", row) 
-
-            if row is not None:
-                return Portfolio(*row)
-            else:
-                print(f"No portfolio found for {coin_symbol}.")
+            portfolios.extend([Portfolio(*row) for row in rows])
+        #     if row is not None:
+        #         return Portfolio(*row)
+        #     else:
+        #         print(f"No portfolio found for {coin_symbol}.")
+        # else:
+        #     print(f"No crypto coin found for symbol {coin_symbol}.")
+        if portfolios:
+            for portfolio in portfolios:
+                print(f"Portfolio found: Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
         else:
-            print(f"No crypto coin found for symbol {coin_symbol}.")
-
-        return None
+            print(f"No portfolios found for {coin_symbol}.")
+            return None
 
 
     @classmethod

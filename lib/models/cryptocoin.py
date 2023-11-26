@@ -106,8 +106,14 @@ class CryptoCoin:
         """
         # with CONN, CONN.cursor() as cursor: 
         rows = CURSOR.execute(sql).fetchall()
+
+        print(f"{'CryptoCoin ID':<22}{'Symbol':<18}{'Name':<20}")
+        print("-" * 55)
+
         for row in rows:
-            print(f"CryptoCoin ID: {row[0]}, Symbol: {row[1]}, Name: {row[2]}")
+            coin_id, symbol, name = row
+            print(f"CryptoCoin ID: {coin_id:<6} Symbol: {symbol:<10}Name:{name:<20}")
+            # print(f"CryptoCoin ID: {row[0]}, Symbol: {row[1]}, Name: {row[2]}")
 
     @classmethod
     def get_all_symbols(cls):

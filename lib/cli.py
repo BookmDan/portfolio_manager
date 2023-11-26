@@ -70,7 +70,7 @@ def create_portfolio():
         coin_symbol = input("Enter coin symbol: ").upper()
         amount = float(input("Enter amount: "))
         user.create_portfolio(coin_symbol, amount)
-        print(f"Portfolio for {user.username} created successfully.", style='green3')
+        console.print(f"Portfolio for {user.username} created successfully.", style='green3')
     else:
         print("User not found.")
 
@@ -82,9 +82,9 @@ def delete_portfolio():
         portfolio = user_instance.find_portfolio_by_id(portfolio_id)
         if portfolio:
             user_instance.delete_portfolio(portfolio)
-            print(f"Portfolio deleted successfully.", style='red3')
+            console.print(f"Portfolio deleted successfully.", style='red')
         else:
-            print("Portfolio not found.")
+            console.print("Portfolio not found.", style='red')
     else:
         print("User not found.")
 
@@ -96,8 +96,8 @@ def find_portfolio_by_symbol():
         portfolio = user.find_portfolio_by_symbol(user_id, coin_symbol)
         if portfolio:
             print(f"Portfolio found: Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
-        else:
-            print("Portfolio not found.")
+        # else:
+        #     print("Portfolio not found.")
     else:
         print("User not found.")
 
