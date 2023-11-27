@@ -19,7 +19,7 @@ def add_user():
     print('')
     username = input("Enter username: ")
     try:
-        User.create(username)
+        User.create_user(username)
         console.print(f"User '{username}' created successfully", style='green3')
     except Exception as exc:
         print('')
@@ -31,7 +31,7 @@ def delete_user_by_id():
     user= User.find_by_id(user_id)
     if user:
         try:
-            User.delete(user)
+            User.delete_user(user)
             console.print(f"User '{user.username}' deleted successfully", style='red')
         except Exception as exc:
             print('')
@@ -145,11 +145,3 @@ def create_portfolio():
 
 def view_coin_symbols():
     CryptoCoin.display_all()
-    # coin_symbols = CryptoCoin.display_all()
-
-    # if coin_symbols:
-    #     print("All Coin Symbols:")
-    #     for symbol in coin_symbols:
-    #         print(symbol)
-    # else: 
-    #     print("No coing symbols found.")

@@ -3,7 +3,6 @@ from .portfolio import Portfolio
 from .cryptocoin import CryptoCoin
 
 class User:
-
     @classmethod
     def create_table(cls):
         sql = """
@@ -43,7 +42,7 @@ class User:
             raise ValueError('Username must be a non-empty string')
 
     @classmethod
-    def create(cls, username):
+    def create_user(cls, username):
         if isinstance(username, str) and len(username) > 0:
             sql = """
                 INSERT INTO users (username)
@@ -59,7 +58,7 @@ class User:
             raise ValueError("Username must be a non-empty string")
 
     @classmethod
-    def delete(self, user):
+    def delete_user(self, user):
         if user and user.user_id:
             Portfolio.delete_user_portfolios(user.user_id)
             sql = """
@@ -69,6 +68,7 @@ class User:
             CURSOR.execute(sql, (user.user_id,))
             CONN.commit()
 
+# move to portfolio
     @classmethod
     def delete_portfolio(cls, portfolio):
         sql = """
@@ -78,7 +78,6 @@ class User:
         CURSOR.execute(sql, (portfolio.user_id, portfolio.portfolio_id))
         CONN.commit()
 
-
     def view_portfolios(self):
         sql = """
             SELECT *
@@ -86,6 +85,8 @@ class User:
             WHERE user_id = ?
         """
         rows = CURSOR.execute(sql, (self.id,)).fetchall()
+
+        # return and don't print
         if rows:
             for row in rows:
                 print(f"Portfolio ID: {row[0]}, User ID: {row[1]}, Coin ID: {row[2]}, Amount: {row[3]}")
@@ -107,6 +108,9 @@ class User:
         user = cls(row[0], row[1]) if row else None
         return user
     
+    # displays to cli or helper // or returns stuff. 
+    # get_all 
+    # index, show, create, and edit 
     @classmethod
     def display_all(cls):
         cls.create_table()
