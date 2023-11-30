@@ -30,6 +30,15 @@ class User:
     def __repr__(self):
         return f'<User {self.user_id}: Username: {self.username}>'
 
+    @classmethod
+    def get_all(cls):
+        sql = """
+            SELECT *
+            FROM users
+        """
+        rows = CURSOR.execute(sql).fetchall()
+        return [cls.instance_from_db(row) for row in rows]
+    
     @property
     def username(self):
         return self._username
@@ -122,19 +131,26 @@ class User:
         rows = CURSOR.execute(sql).fetchall()
         for row in rows:
             print(f"User ID: {row[0]}, Username: {row[1]}")
-
+        
+        
     @staticmethod
-    def display_all_portfolios():
+    def display_all_portfolios(user):
         sql = """
             SELECT *
             FROM portfolios
+            WHERE user_id = ?
         """
-        rows = CURSOR.execute(sql).fetchall()
+        rows = CURSOR.execute(sql, (user.user_id,)).fetchall()
+        portfolios = []
         if rows:
             for row in rows:
-                print(f"User ID: {row[1]}, Portfolio ID: {row[0]}, Coin ID: {row[2]}, Amount: {row[3]}")
-        else:
-            print("No portfolios found.")
+                portfolio_data = {
+                    'portfolio_id': row[0],
+                    'coin_id': row[2],
+                    'amount': row[3]
+                }
+                portfolios.append(portfolio_data)
+        return portfolios
 
     def display_portfolios_by_user(self):
         sql = """

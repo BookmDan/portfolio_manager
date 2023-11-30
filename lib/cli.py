@@ -102,7 +102,15 @@ def find_portfolio_by_symbol():
         print("User not found.")
 
 def view_all_portfolios():
-    User.display_all_portfolios()
+    # User.display_all_portfolios()
+    for user in User.get_all():
+        portfolios = User.display_all_portfolios(user)
+        print(f"User ID: {user.user_id}, Username: {user.username}")
+        if portfolios:
+            for portfolio in portfolios:
+                print(f"  Portfolio ID: {portfolio['portfolio_id']}, Coin ID: {portfolio['coin_id']}, Amount: {portfolio['amount']}")
+        else:
+            print("  No portfolios found.")
 
 
 if __name__ == "__main__":
