@@ -120,38 +120,7 @@ class User:
     # displays to cli or helper // or returns stuff. 
     # get_all 
     # index, show, create, and edit 
-        
-    @staticmethod
-    def display_all_portfolios(user):
-        sql = """
-            SELECT *
-            FROM portfolios
-            WHERE user_id = ?
-        """
-        rows = CURSOR.execute(sql, (user.user_id,)).fetchall()
-        portfolios = []
-        if rows:
-            for row in rows:
-                portfolio_data = {
-                    'portfolio_id': row[0],
-                    'coin_id': row[2],
-                    'amount': row[3]
-                }
-                portfolios.append(portfolio_data)
-        return portfolios
-
-    def display_portfolios_by_user(self):
-        sql = """
-            SELECT *
-            FROM portfolios
-            WHERE user_id = ?
-        """
-        rows = CURSOR.execute(sql, (self.user_id,)).fetchall()
-        if rows:
-            for row in rows:
-                print(f"Portfolio ID: {row[0]}, Coin ID: {row[2]}, Amount: {row[3]}")
-        else:
-            print("No portfolios found for this user.")
+    
 
     def create_portfolio(self, coin_symbol, amount):
         crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)

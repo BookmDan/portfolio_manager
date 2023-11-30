@@ -2,6 +2,7 @@
 from rich.style import Style
 from rich.console import Console
 from models.user import User
+from models.portfolio import Portfolio
 from helpers import exit_program, add_user, view_coin_symbols, delete_user_by_id
 
 console = Console()
@@ -56,12 +57,40 @@ def display_all_users():
     for i, user in enumerate(users):
          print(f"User ID: {i + 1}, Username: {user.username}")
 
+# def view_user_portfolios():
+#     user_id = input("Enter user ID: ")
+#     user = User.find_by_id(user_id)
+#     if user:
+#         print(f"\nPortfolios for {user.username}:")
+#         Portfolio.display_portfolios_by_user(int(user_id))
+#     else:
+#         print("User not found.")
+
 def view_user_portfolios():
+    users = User.get_all()
+
+    print("Select a user:")
+    for i, user in enumerate(users, start=1):
+        print(f"{i}. {user.username}")
+
+    try:
+        user_index = int(input("Enter the number of the user: "))
+        selected_user = users[user_index - 1]  # Adjust index since it starts from 1
+        user_id = selected_user.user_id
+
+        print(f"\nPortfolios for {selected_user.username}:")
+        Portfolio.display_portfolios_by_user(user_id)
+    except (ValueError, IndexError):
+        print("Invalid input or user not found.")
+
+def create_portfolio():
     user_id = input("Enter user ID: ")
     user = User.find_by_id(user_id)
     if user:
-        print(f"\nPortfolios for {user.username}:")
-        user.display_portfolios_by_user()
+        coin_symbol = input("Enter coin symbol: ").upper()
+        amount = float(input("Enter amount: "))
+        Portfolio.create_portfolio(user, coin_symbol, amount)
+        console.print(f"Portfolio for {user.username} created successfully.", style='green3')
     else:
         print("User not found.")
 
@@ -113,7 +142,7 @@ def view_all_portfolios():
     # User.display_all_portfolios()
     users = User.get_all()
     for i, user in enumerate(users):
-        portfolios = User.display_all_portfolios(user)
+        portfolios = Portfolio.display_all_portfolios(user)
         print(f"User ID: {i + 1}, Username: {user.username}")
         # print(f"User ID: {user.user_id}, Username: {user.username}")
         if portfolios:

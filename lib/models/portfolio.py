@@ -28,11 +28,21 @@ class Portfolio:
         CURSOR.execute(sql)
         CONN.commit()
 
-    def create_portfolio(self, coin_symbol, amount):
-        portfolio = CryptoPortfolio.create(self, coin_symbol, amount)
-        self.portfolios.append(portfolio)
-        return portfolio
+    # def create_portfolio(self, coin_symbol, amount):
+    #     portfolio = CryptoPortfolio.create(self, coin_symbol, amount)
+    #     self.portfolios.append(portfolio)
+    #     return portfolio
 
+    def create_portfolio(cls, user, coin_symbol, amount):
+        crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
+
+        if crypto_coin:
+            portfolio = Portfolio.create(user, crypto_coin, amount)
+            # self.portfolios.append(portfolio)
+            return portfolio
+        else:
+            raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
+        
     @classmethod
     def create(cls, user, crypto_coin, amount):
         sql = """
@@ -64,9 +74,9 @@ class Portfolio:
         CONN.commit()
 
 
-    def display_all_portfolios(self):
-        for portfolio in self.portfolios:
-            print(f"Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
+    # def display_all_portfolios(self):
+    #     for portfolio in self.portfolios:
+    #         print(f"Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
 
     @classmethod
     def get_all_symbols(cls):
@@ -107,6 +117,39 @@ class Portfolio:
         """
         row = CURSOR.execute(sql, (user_id,)).fetchone()
         return cls(row[0], row[1]) if row else None
+    
+
+    @staticmethod
+    def display_all_portfolios(user):
+        sql = """
+            SELECT *
+            FROM portfolios
+            WHERE user_id = ?
+        """
+        rows = CURSOR.execute(sql, (user.user_id,)).fetchall()
+        portfolios = []
+        if rows:
+            for row in rows:
+                portfolio_data = {
+                    'portfolio_id': row[0],
+                    'coin_id': row[2],
+                    'amount': row[3]
+                }
+                portfolios.append(portfolio_data)
+        return portfolios
+
+    def display_portfolios_by_user(user_id):
+        sql = """
+            SELECT *
+            FROM portfolios
+            WHERE user_id = ?
+        """
+        rows = CURSOR.execute(sql, (user_id,)).fetchall()
+        if rows:
+            for row in rows:
+                print(f"Portfolio ID: {row[0]}, Coin ID: {row[2]}, Amount: {row[3]}")
+        else:
+            print("No portfolios found for this user.")
 
 class CryptoPortfolio:
     def __init__(self, portfolio_id, user, coin_symbol, amount):
