@@ -1,6 +1,6 @@
 # crypto_model.py
 from models.__init__ import CURSOR, CONN
-
+from .cryptocoin import CryptoCoin
 
 class Portfolio:
     def __init__(self, portfolio_id, user_id, coin_symbol, amount):
@@ -33,6 +33,7 @@ class Portfolio:
     #     self.portfolios.append(portfolio)
     #     return portfolio
 
+    @classmethod
     def create_portfolio(cls, user, coin_symbol, amount):
         crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
 
@@ -42,6 +43,27 @@ class Portfolio:
             return portfolio
         else:
             raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
+        
+    @classmethod
+    def find_portfolio_by_symbol(cls, user_id, coin_symbol):
+        portfolios = []
+
+        crypto_coin_id = cls.find_crypto_id_by_symbol(coin_symbol)
+        if crypto_coin_id is not None:
+            sql = """
+                SELECT id, user_id, crypto_coin_id, amount
+                FROM portfolios
+                WHERE user_id = ? AND crypto_coin_id = ?
+            """
+            rows = CURSOR.execute(sql, (user_id, crypto_coin_id)).fetchall()
+            portfolios.extend([cls(*row) for row in rows])
+
+        if portfolios:
+            for portfolio in portfolios:
+                print(f"Portfolio found: Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
+        else:
+            print(f"No portfolios found for {coin_symbol}.")
+            return None
         
     @classmethod
     def create(cls, user, crypto_coin, amount):
@@ -138,7 +160,8 @@ class Portfolio:
                 portfolios.append(portfolio_data)
         return portfolios
 
-    def display_portfolios_by_user(user_id):
+    @classmethod 
+    def display_portfolios_by_user(cls, user_id):
         sql = """
             SELECT *
             FROM portfolios

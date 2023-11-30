@@ -146,12 +146,6 @@ class User:
             rows = CURSOR.execute(sql, (user_id, crypto_coin_id)).fetchall()
             # print("Debug: Row from the database:", row) 
             portfolios.extend([Portfolio(*row) for row in rows])
-        #     if row is not None:
-        #         return Portfolio(*row)
-        #     else:
-        #         print(f"No portfolio found for {coin_symbol}.")
-        # else:
-        #     print(f"No crypto coin found for symbol {coin_symbol}.")
         if portfolios:
             for portfolio in portfolios:
                 print(f"Portfolio found: Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
