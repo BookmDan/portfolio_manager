@@ -96,20 +96,36 @@ def create_portfolio():
         console.print(f"Portfolio for {user.username} created successfully.", style='green3')
     else:
         print("User not found.")
-
+        
 def delete_portfolio():
-    user_id = input("Enter user ID: ")
-    user_instance = User.find_by_id(user_id)
-    if user_instance:
-        portfolio_id = input("Enter portfolio ID: ")
-        portfolio = user_instance.find_portfolio_by_id(portfolio_id)
-        if portfolio:
-            user_instance.delete_portfolio(portfolio)
-            console.print(f"Portfolio deleted successfully.", style='red')
+    users = User.get_all()
+
+    print("Select a user:")
+    for i, user in enumerate(users, start=1):
+        print(f"{i}. {user.username}")
+
+    try:
+        user_index = int(input("Enter the number of the user: "))
+        selected_user = users[user_index - 1]  # Adjust index since it starts from 1
+
+        if selected_user:
+            portfolio_id = input("Enter portfolio ID: ")
+            portfolio = selected_user.find_portfolio_by_id(portfolio_id)
+            
+            if portfolio:
+                try:
+                    selected_user.delete_portfolio(portfolio)
+                    console.print(f"Portfolio deleted successfully.", style='red')
+                except Exception as exc:
+                    print('')
+                    print("Error deleting portfolio: ", exc)
+            else:
+                console.print("Portfolio not found.", style='red')
         else:
-            console.print("Portfolio not found.", style='red')
-    else:
-        print("User not found.")
+            print("User not found.")
+    except (ValueError, IndexError):
+        print("Invalid input or user not found.")
+
 
 def find_portfolio_by_symbol():
     users = User.get_all()
