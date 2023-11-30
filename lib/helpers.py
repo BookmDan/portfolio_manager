@@ -26,18 +26,29 @@ def add_user():
 
 def delete_user_by_id():
     print('')
-    user_id = input("Enter ID of the user you want to delete: ")
-    user= User.find_by_id(user_id)
-    if user:
-        try:
-            User.delete_user(user)
-            console.print(f"User '{user.username}' deleted successfully", style='red')
-        except Exception as exc:
+    users = User.get_all()
+
+    print("Select a user:")
+    for i, user in enumerate(users, start=1):
+        print(f"{i}. {user.username}")
+
+    try:
+        user_index = int(input("Enter the number of the user: "))
+        selected_user = users[user_index - 1]  # Adjust index since it starts from 1
+
+        if selected_user:
+            try:
+                User.delete_user(selected_user)
+                console.print(f"User '{selected_user.username}' deleted successfully", style='red')
+            except Exception as exc:
+                print('')
+                print("Error deleting user: ", exc)
+        else:
             print('')
-            print("Error deleting user: ", exc)
-    else: 
-        print('')
-        console.print("User not found.", style=invalid)
+            console.print("User not found.", style='invalid')
+
+    except (ValueError, IndexError):
+        print("Invalid input or user not found.")
 
 def user_list():
     return User.display_all()

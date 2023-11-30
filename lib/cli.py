@@ -58,15 +58,6 @@ def display_all_users():
     for i, user in enumerate(users):
          print(f"User ID: {i + 1}, Username: {user.username}")
 
-# def view_user_portfolios():
-#     user_id = input("Enter user ID: ")
-#     user = User.find_by_id(user_id)
-#     if user:
-#         print(f"\nPortfolios for {user.username}:")
-#         Portfolio.display_portfolios_by_user(int(user_id))
-#     else:
-#         print("User not found.")
-
 def view_user_portfolios():
     users = User.get_all()
 
@@ -119,20 +110,6 @@ def delete_portfolio():
             console.print("Portfolio not found.", style='red')
     else:
         print("User not found.")
-
-# def find_portfolio_by_symbol():
-#     user_id = input("Enter user ID: ")
-    
-#     user = User.find_by_id(user_id)
-#     if user:
-#         coin_symbol = input("Enter coin symbol: ").upper()
-#         portfolio = user.find_portfolio_by_symbol(user_id, coin_symbol)
-#         if portfolio:
-#             print(f"Portfolio found: Portfolio ID: {portfolio.portfolio_id}, CryptoCoin ID: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
-#         # else:
-#         #     print("Portfolio not found.")
-#     else:
-#         print("User not found.")
 
 def find_portfolio_by_symbol():
     users = User.get_all()
