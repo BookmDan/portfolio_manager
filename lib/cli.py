@@ -95,7 +95,7 @@ def find_portfolio_by_symbol():
         coin_symbol = input("Enter coin symbol: ").upper()
         portfolio = user.find_portfolio_by_symbol(user_id, coin_symbol)
         if portfolio:
-            print(f"Portfolio found: Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
+            print(f"Portfolio found: Portfolio ID: {portfolio.portfolio_id}, CryptoCoin ID: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
         # else:
         #     print("Portfolio not found.")
     else:
