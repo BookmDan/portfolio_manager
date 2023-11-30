@@ -102,7 +102,7 @@ class User:
         else:
             print("This user has no portfolios.")
 
-    @classmethod
+    @classmethod 
     def find_by_id(cls, user_id):
         sql = """
             SELECT *
@@ -120,18 +120,6 @@ class User:
     # displays to cli or helper // or returns stuff. 
     # get_all 
     # index, show, create, and edit 
-    @classmethod
-    def display_all(cls):
-        cls.create_table()
-
-        sql = """
-            SELECT *
-            FROM users
-        """
-        rows = CURSOR.execute(sql).fetchall()
-        for row in rows:
-            print(f"User ID: {row[0]}, Username: {row[1]}")
-        
         
     @staticmethod
     def display_all_portfolios(user):

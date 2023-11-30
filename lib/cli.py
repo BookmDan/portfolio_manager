@@ -52,7 +52,9 @@ def menu():
 
 def display_all_users():
     print("All Users:")
-    User.display_all()
+    users = User.get_all()
+    for i, user in enumerate(users):
+         print(f"User ID: {i + 1}, Username: {user.username}")
 
 def view_user_portfolios():
     user_id = input("Enter user ID: ")
@@ -101,11 +103,19 @@ def find_portfolio_by_symbol():
     else:
         print("User not found.")
 
+def display_all_users():
+    print("All Users:")
+    users = User.get_all()
+    for i, user in enumerate(users):
+         print(f"User ID: {i + 1}, Username: {user.username}")
+
 def view_all_portfolios():
     # User.display_all_portfolios()
-    for user in User.get_all():
+    users = User.get_all()
+    for i, user in enumerate(users):
         portfolios = User.display_all_portfolios(user)
-        print(f"User ID: {user.user_id}, Username: {user.username}")
+        print(f"User ID: {i + 1}, Username: {user.username}")
+        # print(f"User ID: {user.user_id}, Username: {user.username}")
         if portfolios:
             for portfolio in portfolios:
                 print(f"  Portfolio ID: {portfolio['portfolio_id']}, Coin ID: {portfolio['coin_id']}, Amount: {portfolio['amount']}")
