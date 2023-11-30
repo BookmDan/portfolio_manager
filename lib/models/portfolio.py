@@ -45,6 +45,16 @@ class Portfolio:
             raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
         
     @classmethod
+    def delete_portfolio(cls, portfolio):
+        sql = """
+            DELETE FROM portfolios
+            WHERE user_id = ? AND id =? 
+        """
+        CURSOR.execute(sql, (portfolio.user_id, portfolio.portfolio_id))
+        CONN.commit()
+
+
+    @classmethod
     def find_portfolio_by_symbol(cls, user_id, coin_symbol):
         portfolios = []
 

@@ -77,31 +77,6 @@ class User:
             CURSOR.execute(sql, (user.user_id,))
             CONN.commit()
 
-# move to portfolio
-    @classmethod
-    def delete_portfolio(cls, portfolio):
-        sql = """
-            DELETE FROM portfolios
-            WHERE user_id = ? AND id =? 
-        """
-        CURSOR.execute(sql, (portfolio.user_id, portfolio.portfolio_id))
-        CONN.commit()
-
-    def view_portfolios(self):
-        sql = """
-            SELECT *
-            FROM portfolios
-            WHERE user_id = ?
-        """
-        rows = CURSOR.execute(sql, (self.id,)).fetchall()
-
-        # return and don't print
-        if rows:
-            for row in rows:
-                print(f"Portfolio ID: {row[0]}, User ID: {row[1]}, Coin ID: {row[2]}, Amount: {row[3]}")
-        else:
-            print("This user has no portfolios.")
-
     @classmethod 
     def find_by_id(cls, user_id):
         sql = """
@@ -120,39 +95,6 @@ class User:
     # displays to cli or helper // or returns stuff. 
     # get_all 
     # index, show, create, and edit 
-    
-
-    def create_portfolio(self, coin_symbol, amount):
-        crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
-
-        if crypto_coin:
-            portfolio = Portfolio.create(self, crypto_coin, amount)
-            self.portfolios.append(portfolio)
-            return portfolio
-        else:
-            raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
-
-    @classmethod
-    def find_portfolio_by_symbol(cls, user_id, coin_symbol):
-        portfolios = []
-
-        crypto_coin_id = CryptoCoin.find_crypto_id_by_symbol(coin_symbol)
-        if crypto_coin_id is not None:
-            sql = """
-                SELECT id, user_id, crypto_coin_id, amount
-                FROM portfolios
-                WHERE user_id = ? AND crypto_coin_id = ?
-            """
-            rows = CURSOR.execute(sql, (user_id, crypto_coin_id)).fetchall()
-            # print("Debug: Row from the database:", row) 
-            portfolios.extend([Portfolio(*row) for row in rows])
-        if portfolios:
-            for portfolio in portfolios:
-                print(f"Portfolio found: Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
-        else:
-            print(f"No portfolios found for {coin_symbol}.")
-            return None
-
 
     @classmethod
     def find_by_id(cls, user_id):

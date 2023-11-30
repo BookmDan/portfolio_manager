@@ -76,26 +76,42 @@ def view_user_portfolios():
         print("Invalid input or user not found.")
 
 def create_portfolio():
-    user_id = input("Enter user ID: ")
-    user = User.find_by_id(user_id)
-    if user:
-        coin_symbol = input("Enter coin symbol: ").upper()
-        amount = float(input("Enter amount: "))
-        Portfolio.create_portfolio(user, coin_symbol, amount)
-        console.print(f"Portfolio for {user.username} created successfully.", style='green3')
-    else:
-        print("User not found.")
+    users = User.get_all()
 
-def create_portfolio():
-    user_id = input("Enter user ID: ")
-    user = User.find_by_id(user_id)
-    if user:
-        coin_symbol = input("Enter coin symbol: ").upper()
-        amount = float(input("Enter amount: "))
-        user.create_portfolio(coin_symbol, amount)
-        console.print(f"Portfolio for {user.username} created successfully.", style='green3')
-    else:
-        print("User not found.")
+    print("Select a user:")
+    for i, user in enumerate(users, start=1):
+        print(f"{i}. {user.username}")
+
+    try:
+        user_index = int(input("Enter the number of the user: "))
+        selected_user = users[user_index - 1]  # Adjust index since it starts from 1
+
+        if selected_user:
+            coin_symbol = input("Enter coin symbol: ").upper()
+            amount = float(input("Enter amount: "))
+            
+            try:
+                Portfolio.create_portfolio(selected_user, coin_symbol, amount)
+                console.print(f"Portfolio for {selected_user.username} created successfully.", style='green3')
+            except Exception as exc:
+                print('')
+                print("Error creating portfolio: ", exc)
+        else:
+            print("User not found.")
+    except (ValueError, IndexError):
+        print("Invalid input or user not found.")
+
+
+# def create_portfolio():
+#     user_id = input("Enter user ID: ")
+#     user = User.find_by_id(user_id)
+#     if user:
+#         coin_symbol = input("Enter coin symbol: ").upper()
+#         amount = float(input("Enter amount: "))
+#         user.create_portfolio(coin_symbol, amount)
+#         console.print(f"Portfolio for {user.username} created successfully.", style='green3')
+#     else:
+#         print("User not found.")
         
 def delete_portfolio():
     users = User.get_all()
@@ -114,7 +130,7 @@ def delete_portfolio():
             
             if portfolio:
                 try:
-                    selected_user.delete_portfolio(portfolio)
+                    Portfolio.delete_portfolio(portfolio)
                     console.print(f"Portfolio deleted successfully.", style='red')
                 except Exception as exc:
                     print('')
