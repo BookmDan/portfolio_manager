@@ -1,6 +1,6 @@
 # crypto_model.py
 from models.__init__ import CURSOR, CONN
-from .cryptocoin import CryptoCoin
+from models.cryptocoin import CryptoCoin
 
 class Portfolio:
     def __init__(self, portfolio_id, user_id, coin_symbol, amount):
@@ -48,7 +48,7 @@ class Portfolio:
     def find_portfolio_by_symbol(cls, user_id, coin_symbol):
         portfolios = []
 
-        crypto_coin_id = cls.find_crypto_id_by_symbol(coin_symbol)
+        crypto_coin_id = CryptoCoin.find_crypto_id_by_symbol(coin_symbol)
         if crypto_coin_id is not None:
             sql = """
                 SELECT id, user_id, crypto_coin_id, amount

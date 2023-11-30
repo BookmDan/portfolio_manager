@@ -3,7 +3,6 @@ from rich.style import Style
 from rich.console import Console
 from models.user import User
 from models.portfolio import Portfolio
-from lib.models.cryptocoin import CryptoCoin
 
 from helpers import exit_program, add_user, view_coin_symbols, delete_user_by_id
 
@@ -121,38 +120,38 @@ def delete_portfolio():
     else:
         print("User not found.")
 
-def find_portfolio_by_symbol():
-    user_id = input("Enter user ID: ")
-    
-    user = User.find_by_id(user_id)
-    if user:
-        coin_symbol = input("Enter coin symbol: ").upper()
-        portfolio = user.find_portfolio_by_symbol(user_id, coin_symbol)
-        if portfolio:
-            print(f"Portfolio found: Portfolio ID: {portfolio.portfolio_id}, CryptoCoin ID: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
-        # else:
-        #     print("Portfolio not found.")
-    else:
-        print("User not found.")
-
 # def find_portfolio_by_symbol():
-#     users = User.get_all()
-
-#     print("Select a user:")
-#     for i, user in enumerate(users, start=1):
-#         print(f"{i}. {user.username}")
-
-#     try:
-#         user_index = int(input("Enter the number of the user: "))
-#         selected_user = users[user_index - 1]  # Adjust index since it starts from 1
-#         user_id = selected_user.user_id
-
-#         print(f"\nFind portfolio for {selected_user.username}:")
+#     user_id = input("Enter user ID: ")
+    
+#     user = User.find_by_id(user_id)
+#     if user:
 #         coin_symbol = input("Enter coin symbol: ").upper()
+#         portfolio = user.find_portfolio_by_symbol(user_id, coin_symbol)
+#         if portfolio:
+#             print(f"Portfolio found: Portfolio ID: {portfolio.portfolio_id}, CryptoCoin ID: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
+#         # else:
+#         #     print("Portfolio not found.")
+#     else:
+#         print("User not found.")
 
-#         Portfolio.find_portfolio_by_symbol(user_id, coin_symbol)
-#     except (ValueError, IndexError):
-#         print("Invalid input or user not found.")
+def find_portfolio_by_symbol():
+    users = User.get_all()
+
+    print("Select a user:")
+    for i, user in enumerate(users, start=1):
+        print(f"{i}. {user.username}")
+
+    try:
+        user_index = int(input("Enter the number of the user: "))
+        selected_user = users[user_index - 1]  # Adjust index since it starts from 1
+        user_id = selected_user.user_id
+
+        print(f"\nFind portfolio for {selected_user.username}:")
+        coin_symbol = input("Enter coin symbol: ").upper()
+
+        Portfolio.find_portfolio_by_symbol(user_id, coin_symbol)
+    except (ValueError, IndexError):
+        print("Invalid input or user not found.")
 
 
 def display_all_users():
