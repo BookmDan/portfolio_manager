@@ -55,7 +55,7 @@ def user_list():
 
 
 def view_transactions(user):
-    transactions = user.transactions
+    transactions = user.get_transactions()
     print('')
     if transactions:
         print(f'Transactions for {user.username}:')
@@ -69,15 +69,21 @@ def view_transactions(user):
 
 def add_transaction(user):
     print('')
-    coin_symbol = input("Enter the symbol of the crypto coin for the new transaction: ")
+    coin_symbol = input("Enter the symbol of the crypto coin for the new transaction: ").upper()
     amount = float(input("Enter the amount of the crypto coin: "))
-    try:
-        user.create_transaction(coin_symbol, amount)
+    
+    crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
+    if crypto_coin:
+        try:
+            user.create_transaction(coin_symbol, amount)
+            print('')
+            console.print('Transaction created successfully', style='green3')
+        except Exception as exc:
+            print('')
+            console.print("Error creating transaction: ", exc, style=invalid)
+    else: 
         print('')
-        console.print('Transaction created successfully', style='green3')
-    except Exception as exc:
-        print('')
-        console.print("Error creating transaction: ", exc, style=invalid)
+        console.print(f"Error creating transaction: Coin symbol '{coin_symbol}' not found.", style=invalid)
 
 
 def remove_transaction(user):
@@ -139,19 +145,5 @@ def delete_user(user):
         console.print('User and transactions deleted', style='green3')
         return 1
     
-def create_portfolio():
-    user_id = input("Enter user ID: ")
-    user = User.find_by_id(user_id)
-
-    if user:
-        coin_symbol = input("Enter coin symbol: ")
-        amount = float(input("Enter amount: "))
-
-        # Assuming create_portfolio is a method in your User class
-        user.create_portfolio(coin_symbol, amount)
-        print(f"Portfolio for {user.username} created successfully.")
-    else:
-        print("User not found.")
-
 def view_coin_symbols():
     CryptoCoin.display_all()

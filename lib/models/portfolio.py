@@ -161,12 +161,8 @@ class Portfolio:
         portfolios = []
         if rows:
             for row in rows:
-                portfolio_data = {
-                    'portfolio_id': row[0],
-                    'coin_id': row[2],
-                    'amount': row[3]
-                }
-                portfolios.append(portfolio_data)
+                portfolio = Portfolio(row[0], user, CryptoCoin.find_by_id(row[2]), row[3])
+                portfolios.append(portfolio)
         return portfolios
 
     @classmethod 

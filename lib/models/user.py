@@ -1,6 +1,7 @@
 from .__init__ import CURSOR, CONN
 from .portfolio import Portfolio
 from .cryptocoin import CryptoCoin
+from .transaction import Transaction
 
 class User:
     @classmethod
@@ -81,10 +82,6 @@ class User:
         user = cls(row[0], row[1]) if row else None
         return user
     
-    # displays to cli or helper // or returns stuff. 
-    # get_all 
-    # index, show, create, and edit 
-
     @classmethod
     def find_by_id(cls, user_id):
         sql = """
@@ -106,7 +103,20 @@ class User:
             return Portfolio(row[0], row[1], row[2], row[3])
         else:
             return None
-    
+        
+    def get_transactions(self):
+        return Portfolio.display_all_portfolios(self)
 
+    def create_transaction(self, coin_symbol, amount):
+        crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
+
+        if crypto_coin:
+            transaction = Transaction.create(self, crypto_coin, amount)
+            # Add the transaction to the user's transactions list if you have one
+            # self.transactions.append(transaction)
+            return transaction
+        else:
+            raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
+    
 User.create_table()
 # User.find_portfolio_by_symbol(user_id=13, coin_symbol='BTC')

@@ -4,7 +4,7 @@ from rich.console import Console
 from models.user import User
 from models.portfolio import Portfolio
 
-from helpers import exit_program, add_user, view_coin_symbols, delete_user_by_id
+from helpers import exit_program, add_user, view_coin_symbols, delete_user_by_id, view_transactions, add_transaction, remove_transaction
 
 console = Console()
 
@@ -32,8 +32,22 @@ def main():
             view_coin_symbols()
         elif choice.lower() == 'x':
             exit_program()
+        elif choice == '10':
+            users = User.get_all()
+            print("Select a user:")
+            for i, user in enumerate(users, start=1):
+                print(f"{i}. {user.username}")
+
+            try:
+                user_index = int(input("Enter the number of the user: "))
+                selected_user = users[user_index - 1]
+                manage_transactions(selected_user)
+            except (ValueError, IndexError):
+                print("Invalid input or user not found.")
+        elif choice.lower() == 'x':
+            exit_program()
         else:
-            print("Invalid choice")
+            print("Invalid choice. Please enter a number from 1 to 10.")
 
 def menu():
     print('')
@@ -49,8 +63,30 @@ def menu():
     print("7. View All Portfolios")
     print("8. Find Portfolio by Coin Symbol")
     print("9. View All Coin Symbols")
-    # console.print(f"7. View All Coin Symbols ", style='green3')
+    print("10. Manage Transactions")
     print("Enter x to exit the program")
+
+def manage_transactions(user):
+    while True:
+        print("\n------Transaction Menu--------")
+        print("1. View Transactions")
+        print("2. Add Transaction")
+        print("3. Remove Transaction")
+        print("4. Back to Main Menu")
+        choice = input("> ")
+
+        if choice == '1':
+            view_transactions(user)
+        elif choice == '2':
+            add_transaction(user)
+        elif choice == '3':
+            remove_transaction(user)
+        elif choice == '4':
+            break
+        elif choice == 'x':
+            exit_program()
+        else:
+            print("Invalid choice. Please enter a number from 1 to 4.")
 
 def display_all_users():
     print("All Users:")
@@ -102,16 +138,6 @@ def create_portfolio():
         print("Invalid input or user not found.")
 
 
-# def create_portfolio():
-#     user_id = input("Enter user ID: ")
-#     user = User.find_by_id(user_id)
-#     if user:
-#         coin_symbol = input("Enter coin symbol: ").upper()
-#         amount = float(input("Enter amount: "))
-#         user.create_portfolio(coin_symbol, amount)
-#         console.print(f"Portfolio for {user.username} created successfully.", style='green3')
-#     else:
-#         print("User not found.")
         
 def delete_portfolio():
     users = User.get_all()
