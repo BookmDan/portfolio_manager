@@ -38,7 +38,7 @@ def delete_user_by_id():
 
         if selected_user:
             try:
-                User.delete_user(selected_user)
+                Portfolio.delete_user(selected_user)
                 console.print(f"User '{selected_user.username}' deleted successfully", style='red')
             except Exception as exc:
                 print('')

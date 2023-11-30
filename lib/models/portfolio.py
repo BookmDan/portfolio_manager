@@ -28,10 +28,16 @@ class Portfolio:
         CURSOR.execute(sql)
         CONN.commit()
 
-    # def create_portfolio(self, coin_symbol, amount):
-    #     portfolio = CryptoPortfolio.create(self, coin_symbol, amount)
-    #     self.portfolios.append(portfolio)
-    #     return portfolio
+    @classmethod
+    def delete_user(self, user):
+        if user and user.user_id:
+            Portfolio.delete_user_portfolios(user.user_id)
+            sql = """
+                DELETE FROM users
+                WHERE id = ?
+            """
+            CURSOR.execute(sql, (user.user_id,))
+            CONN.commit()
 
     @classmethod
     def create_portfolio(cls, user, coin_symbol, amount):
@@ -52,7 +58,15 @@ class Portfolio:
         """
         CURSOR.execute(sql, (portfolio.user_id, portfolio.portfolio_id))
         CONN.commit()
-
+    
+    @classmethod
+    def delete_user_portfolios(cls, user_id):
+        sql = """
+            DELETE FROM portfolios
+            WHERE user_id = ?
+        """
+        CURSOR.execute(sql, (user_id,))
+        CONN.commit()
 
     @classmethod
     def find_portfolio_by_symbol(cls, user_id, coin_symbol):
@@ -97,20 +111,6 @@ class Portfolio:
         CONN.commit()
 
     @classmethod
-    def delete_user_portfolios(cls, user_id):
-        sql = """
-            DELETE FROM portfolios
-            WHERE user_id = ?
-        """
-        CURSOR.execute(sql, (user_id,))
-        CONN.commit()
-
-
-    # def display_all_portfolios(self):
-    #     for portfolio in self.portfolios:
-    #         print(f"Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
-
-    @classmethod
     def get_all_symbols(cls):
         sql = """
             SELECT DISTINCT crypto_coin_id
@@ -118,7 +118,6 @@ class Portfolio:
         """
         rows = CURSOR.execute(sql).fetchall()
         return [row[0] for row in rows]
-
 
     @classmethod
     def delete(cls, user):
@@ -211,13 +210,3 @@ class CryptoPortfolio:
         """
         CURSOR.execute(sql, (self.portfolio_id,))
         CONN.commit()
-
-    @classmethod
-    def display_all(cls):
-        sql = """
-            SELECT *
-            FROM crypto_portfolios
-        """
-        rows = CURSOR.execute(sql).fetchall()
-        for row in rows:
-            print(f"Portfolio ID: {row[0]}, Coin: {row[2]}, Amount: {row[3]}, User ID: {row[1]}")

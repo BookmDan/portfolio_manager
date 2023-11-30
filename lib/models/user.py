@@ -66,17 +66,6 @@ class User:
         else:
             raise ValueError("Username must be a non-empty string")
 
-    @classmethod
-    def delete_user(self, user):
-        if user and user.user_id:
-            Portfolio.delete_user_portfolios(user.user_id)
-            sql = """
-                DELETE FROM users
-                WHERE id = ?
-            """
-            CURSOR.execute(sql, (user.user_id,))
-            CONN.commit()
-
     @classmethod 
     def find_by_id(cls, user_id):
         sql = """
