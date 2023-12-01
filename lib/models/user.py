@@ -104,19 +104,48 @@ class User:
         else:
             return None
         
+    # def get_transactions(self):
+    #     return Portfolio.display_all_portfolios(self)
+
     def get_transactions(self):
-        return Portfolio.display_all_portfolios(self)
+        sql = """
+            SELECT *
+            FROM transactions
+            WHERE user_id = ?
+        """
+        rows = CURSOR.execute(sql, (self.user_id,)).fetchall()
 
+        transactions = []
+        for row in rows:
+            transaction_data = {
+                'transaction_id': row[0],
+                'coin_symbol': row[3],
+                'amount': row[4]
+            }
+            transactions.append(transaction_data)
+
+        return transactions
+
+
+# hmm why is this here 
+
+    @property
+    def transactions(self):
+        from models.transaction import Transaction
+        return Transaction.fetch_transactions_by_user(self.user_id)
+    
     def create_transaction(self, coin_symbol, amount):
-        crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
+        from models.transaction import Transaction
+        Transaction.create_transaction(self.user_id, coin_symbol, amount)
+        # crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
 
-        if crypto_coin:
-            transaction = Transaction.create(self, crypto_coin, amount)
-            # Add the transaction to the user's transactions list if you have one
-            # self.transactions.append(transaction)
-            return transaction
-        else:
-            raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
+        # if crypto_coin:
+        #     transaction = Transaction.create(self, crypto_coin, amount)
+        #     # Add the transaction to the user's transactions list if you have one
+        #     # self.transactions.append(transaction)
+        #     return transaction
+        # else:
+        #     raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
     
 User.create_table()
 # User.find_portfolio_by_symbol(user_id=13, coin_symbol='BTC')

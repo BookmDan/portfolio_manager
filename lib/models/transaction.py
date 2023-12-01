@@ -1,9 +1,9 @@
 from models.__init__ import CURSOR, CONN
 
 class Transaction:
-  def __init__(self, transaction_id, user, crypto_coin, amount):
+  def __init__(self, transaction_id, user_id, crypto_coin, amount):
     self.transaction_id = transaction_id
-    self.user = user
+    self.user_id = user_id
     self.crypto_coin = crypto_coin
     self.amount = amount
 
@@ -42,5 +42,27 @@ class Transaction:
     # FOREIGN KEY (portfolio_id) REFERENCES portfolios (id)
     CURSOR.execute(sql)
     CONN.commit()
+
+  @classmethod
+  def create_transaction(cls, user_id, coin_symbol, amount):
+      sql = """
+          INSERT INTO transactions (user_id, coin_symbol, amount)
+          VALUES (?, ?, ?)
+      """
+      CURSOR.execute(sql, (user_id, coin_symbol, amount))
+      CONN.commit()
+
+      transaction_id = CURSOR.lastrowid
+      return cls(transaction_id, user_id, coin_symbol, amount)
+  
+  @classmethod
+  def fetch_transactions_by_user(cls, user_id):
+      sql = """
+          SELECT id, user_id, coin_symbol, amount
+          FROM transactions
+          WHERE user_id = ?
+      """
+      rows = CURSOR.execute(sql, (user_id,)).fetchall()
+      return [cls(*row) for row in rows]
   
 Transaction.create_table()
