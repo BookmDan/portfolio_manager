@@ -149,6 +149,9 @@ class Portfolio:
         row = CURSOR.execute(sql, (user_id,)).fetchone()
         return cls(row[0], row[1]) if row else None
     
+    def display_all_portfolios(self):
+        for portfolio in self.portfolios:
+            print(f"Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
 
     @staticmethod
     def display_all_portfolios(user):
@@ -161,10 +164,14 @@ class Portfolio:
         portfolios = []
         if rows:
             for row in rows:
-                portfolio = Portfolio(row[0], user, CryptoCoin.find_by_id(row[2]), row[3])
-                portfolios.append(portfolio)
+                portfolio_data = {
+                    'portfolio_id': row[0],
+                    'coin_id': row[2],
+                    'amount': row[3]
+                }
+                portfolios.append(portfolio_data)
         return portfolios
-
+    
     @classmethod 
     def display_portfolios_by_user(cls, user_id):
         sql = """
