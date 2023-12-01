@@ -5,6 +5,7 @@ class Transaction:
     self.transaction_id = transaction_id
     self.user_id = user_id
     self.crypto_coin = crypto_coin
+    # self.coin_symbol = coin_symbol 
     self.amount = amount
 
     # Other methods and properties...

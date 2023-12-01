@@ -135,12 +135,13 @@ class User:
         return Transaction.fetch_transactions_by_user(self.user_id)
     
     def create_transaction(self, coin_symbol, amount):
+        
         from models.transaction import Transaction
         Transaction.create_transaction(self.user_id, coin_symbol, amount)
         # crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
 
         # if crypto_coin:
-        #     transaction = Transaction.create(self, crypto_coin, amount)
+        #     transaction = Transaction.create(self, crypto_coin, coin_symbol, amount)
         #     # Add the transaction to the user's transactions list if you have one
         #     # self.transactions.append(transaction)
         #     return transaction

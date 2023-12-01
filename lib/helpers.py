@@ -32,39 +32,42 @@ def delete_user_by_id():
     for i, user in enumerate(users, start=1):
         print(f"{i}. {user.username}")
 
-    try:
-        user_index = int(input("Enter the number of the user: "))
-        selected_user = users[user_index - 1]  # Adjust index since it starts from 1
+    # try:
+    user_index = int(input("Enter the number of the user: "))
+    selected_user = users[user_index - 1]  # Adjust index since it starts from 1
 
-        if selected_user:
-            try:
-                Portfolio.delete_user(selected_user)
-                console.print(f"User '{selected_user.username}' deleted successfully", style='red')
-            except Exception as exc:
-                print('')
-                print("Error deleting user: ", exc)
-        else:
+    if selected_user:
+        try:
+            Portfolio.delete_user(selected_user)
+            console.print(f"User '{selected_user.username}' deleted successfully", style='red')
+        except Exception as exc:
             print('')
-            console.print("User not found.", style='invalid')
+            print("Error deleting user: ", exc)
+    else:
+        print('')
+        console.print("User not found.", style='invalid')
 
-    except (ValueError, IndexError):
-        print("Invalid input or user not found.")
+    # except (ValueError, IndexError):
+    #     print("Invalid input or user not found.")
 
 def user_list():
     return User.display_all()
 
 
 def view_transactions(user):
-    transactions = user.get_transactions()
-    print('')
-    if transactions:
-        print(f'Transactions for {user.username}:')
-        for i, transaction in enumerate(transactions):
-            console.print(i + 1, f"Coin: {transaction.coin_symbol}, Amount: {transaction.amount}", style='orange3')
+    if user:
+        transactions = user.get_transactions()
+        print('')
+        if transactions:
+            print(f'Transactions for {user.username}:')
+            for i, transaction in enumerate(transactions):
+                console.print(i + 1, f"Coin: {transaction['coin_symbol']}, Amount: {transaction['amount']}", style='orange3')
+        else:
+            console.print(f'No transactions for {user.username}', style='orange3')
+        print('')
+        input('Press Enter to return to User Details')
     else:
-        console.print(f'No transactions for {user.username}', style='orange3')
-    print('')
-    input('Press Enter to return to User Details')
+        print("User not found.")
 
 
 def add_transaction(user):
@@ -92,26 +95,26 @@ def remove_transaction(user):
     if transactions:
         print(f'Transactions for {user.username}:')
         for i, transaction in enumerate(transactions):
-            console.print(i + 1, f"Coin: {transaction.coin_symbol}, Amount: {transaction.amount}", style='orange3')
+            console.print(i + 1, f"Coin: {transaction.crypto_coin.coin_symbol}, Amount: {transaction.amount}", style='orange3')
         print('')
         choice = input("Enter the number for the transaction to delete: ")
 
         try:
             picked_transaction = transactions[int(choice) - 1]
             print('')
-            console.print(f"Delete transaction with Coin: {picked_transaction.coin_symbol} and Amount: {picked_transaction.amount}?"
+            console.print(f"Delete transaction with Coin: {picked_transaction.crypto_coin.coin_symbol} and Amount: {picked_transaction.amount}?"
                           f" Enter y to confirm, anything else to cancel")
             confirmation = input("> ")
             if confirmation == 'y':
-                picked_transaction.delete()
+                Transaction.delete_transaction(picked_transaction['transaction_id'])
                 print('')
                 console.print(f'Transaction deleted', style='green3')
             else:
                 print('')
                 console.print('Action canceled', style='yellow')
-        except:
+        except (ValueError, IndexError):
             print("")
-            console.print(f"Invalid entry: {choice}", style=invalid, highlight=False)
+            console.print("Invalid entry", style=invalid, highlight=False)
     else:
         console.print(f'No transactions for {user.username}', style='orange3')
 
