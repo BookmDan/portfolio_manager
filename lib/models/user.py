@@ -76,21 +76,22 @@ class User:
         """
         row = CURSOR.execute(sql, (user_id,)).fetchone()
         return cls.instance_from_db(row) if row else None
+    
+    @classmethod
+    def find_by_name(cls, username):
+        sql = """
+            SELECT *
+            FROM users
+            WHERE username = ?
+        """
+        row = CURSOR.execute(sql, (username,)).fetchone()
+        return cls.instance_from_db(row) if row else None
+
 
     @classmethod
     def instance_from_db(cls, row):
         user = cls(row[0], row[1]) if row else None
         return user
-    
-    @classmethod
-    def find_by_id(cls, user_id):
-        sql = """
-            SELECT *
-            FROM users
-            WHERE id = ?
-        """
-        row = CURSOR.execute(sql, (user_id,)).fetchone()
-        return cls.instance_from_db(row) if row else None
     
     def find_portfolio_by_id(self, portfolio_id):
         sql = """

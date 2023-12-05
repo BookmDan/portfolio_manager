@@ -55,11 +55,15 @@ def delete_user_by_id():
         print(f"{i}. {user.username}")
 
     # try:
-    user_index = int(input("Enter the number of the user: "))
-    selected_user = users[user_index - 1]  # Adjust index since it starts from 1
+    user_name = input("Enter the username of the user: ")
+    selected_user = User.find_by_name(user_name)
+
+    #find_by_id method 
+    # user_index = int(input("Enter the number of the user: "))
+    # selected_user = users[user_index - 1]  # Adjust index since it starts from 1
 
     if selected_user:
-        try:
+        try: 
             Portfolio.delete_user(selected_user)
             console.print(f"User '{selected_user.username}' deleted successfully", style='red')
         except Exception as exc:
