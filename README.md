@@ -13,10 +13,9 @@ enter the virtual environment.
 
 Type in 'python lib/cli.py' to start the main menu. 
 
-<div>
-    <a href="https://www.loom.com/embed/b7fe7433847c4251b81ea09a994e1b44?sid=76936476-e243-4425-b3e1-d7147c24e307">
+<a href="[https://www.loom.com/embed/b7fe7433847c4251b81ea09a994e1b44?sid=76936476-e243-4425-b3e1-d7147c24e307](https://www.loom.com/share/80bfca16cb0f4b5a8eae4c46237534b2?sid=849d576f-4ff8-4d04-9d70-c306e60fadf6)">
       <p>Command Line Crypto Portfolio - Watch Video</p>
-    </a>
+</a>
 </div>
 
 The directory structure is as follows:
