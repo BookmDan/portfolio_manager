@@ -11,6 +11,28 @@ invalid = Style(color='magenta2', bold=True)
 
 def exit_program():
     console.print("See you next time! (On the moon ^^) ", style="blue3 on grey84 bold")
+    console.print('''
+
+                           *     .--.
+                                / /  `
+               +               | |
+                      '         \ \__,
+                  *          +   '--'  *
+                      +   /\\
+         +              .'  '.   *
+                *      /======\      +
+                      ;:.  _   ;
+                      |:. (_)  |
+                      |:.  _   |
+            +         |:. (_)  |          *
+                      ;:.      ;
+                    .' \:.    / `.
+                   / .-'':._.'`-. \\
+                   |/    /||\    \|
+             jgs _..--"""````"""--.._
+           _.-'``                    ``'-._
+         -'                                '-
+    ''')
     print('')
     exit()
 
