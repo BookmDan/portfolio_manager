@@ -4,7 +4,6 @@ from rich.style import Style
 from models import CURSOR, CONN
 from models.portfolio import Portfolio
 from models.user import User
-from models.cryptocoin import CryptoCoin
 
 console = Console()
 invalid = Style(color='magenta2', bold=True)
@@ -95,69 +94,6 @@ def view_transactions(user):
     else:
         print("User not found.")
 
-
-def add_transaction(user):
-    print('')
-    coin_symbol = input("Enter the symbol of the crypto coin for the new transaction: ").upper()
-    amount = float(input("Enter the amount of the crypto coin: "))
-    
-    crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
-    if crypto_coin:
-        try:
-            user.create_transaction(coin_symbol, amount)
-            print('')
-            console.print('Transaction created successfully', style='green3')
-        except Exception as exc:
-            print('')
-            console.print("Error creating transaction: ", exc, style=invalid)
-    else: 
-        print('')
-        console.print(f"Error creating transaction: Coin symbol '{coin_symbol}' not found.", style=invalid)
-
-
-def remove_transaction(user):
-    transactions = user.transactions
-    print('')
-    if transactions:
-        print(f'Transactions for {user.username}:')
-        for i, transaction in enumerate(transactions):
-            console.print(i + 1, f"Coin: {transaction.crypto_coin.coin_symbol}, Amount: {transaction.amount}", style='orange3')
-        print('')
-        choice = input("Enter the number for the transaction to delete: ")
-
-        try:
-            picked_transaction = transactions[int(choice) - 1]
-            print('')
-            console.print(f"Delete transaction with Coin: {picked_transaction.crypto_coin.coin_symbol} and Amount: {picked_transaction.amount}?"
-                          f" Enter y to confirm, anything else to cancel")
-            confirmation = input("> ")
-            if confirmation == 'y':
-                Transaction.delete_transaction(picked_transaction['transaction_id'])
-                print('')
-                console.print(f'Transaction deleted', style='green3')
-            else:
-                print('')
-                console.print('Action canceled', style='yellow')
-        except (ValueError, IndexError):
-            print("")
-            console.print("Invalid entry", style=invalid, highlight=False)
-    else:
-        console.print(f'No transactions for {user.username}', style='orange3')
-
-
-def update_user(user):
-    print('')
-    tmp = user.username
-    try:
-        username = input('Enter the username for the updated user: ')
-        user.username = username
-        user.update()
-        print('')
-        console.print('Update successful', style='green3')
-    except Exception as exc:
-        user.username = tmp
-        console.print("Error updating user: must enter a valid username", style=invalid)
-
 def delete_user(user):
     print('')
     console.print(f'Delete {user.username} and all its transactions? Enter y to confirm, anything else to cancel')
@@ -173,6 +109,3 @@ def delete_user(user):
         print('')
         console.print('User and transactions deleted', style='green3')
         return 1
-    
-def view_coin_symbols():
-    CryptoCoin.display_all()

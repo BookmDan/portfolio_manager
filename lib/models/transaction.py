@@ -8,8 +8,6 @@ class Transaction:
     # self.coin_symbol = coin_symbol 
     self.amount = amount
 
-    # Other methods and properties...
-
   @classmethod
   def create(cls, user, crypto_coin, amount):
     sql = """
@@ -35,12 +33,6 @@ class Transaction:
             FOREIGN KEY (user_id) REFERENCES users (id)
         )
     """
-
-    # portfolio_id INTEGER,
-    # transaction_type TEXT,
-    # amount REAL,
-    # timestamp TEXT,
-    # FOREIGN KEY (portfolio_id) REFERENCES portfolios (id)
     CURSOR.execute(sql)
     CONN.commit()
 

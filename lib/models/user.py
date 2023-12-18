@@ -1,7 +1,5 @@
 from .__init__ import CURSOR, CONN
 from .portfolio import Portfolio
-from .cryptocoin import CryptoCoin
-from .transaction import Transaction
 
 class User:
     @classmethod
@@ -139,15 +137,7 @@ class User:
         
         from models.transaction import Transaction
         Transaction.create_transaction(self.user_id, coin_symbol, amount)
-        # crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
-
-        # if crypto_coin:
-        #     transaction = Transaction.create(self, crypto_coin, coin_symbol, amount)
-        #     # Add the transaction to the user's transactions list if you have one
-        #     # self.transactions.append(transaction)
-        #     return transaction
-        # else:
-        #     raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
+   
     
 User.create_table()
 # User.find_portfolio_by_symbol(user_id=13, coin_symbol='BTC')
