@@ -2,6 +2,11 @@
 from models.__init__ import CURSOR, CONN
 
 class CryptoCoin:
+    def __init__(self, coin_id, symbol=None, name=None):
+        self.coin_id = coin_id
+        self.symbol = symbol
+        self.name = name
+
     @classmethod
     def create_table(cls):
         sql = """
@@ -21,11 +26,6 @@ class CryptoCoin:
         """
         CURSOR.execute(sql)
         CONN.commit()
-
-    def __init__(self, coin_id, symbol=None, name=None):
-        self.coin_id = coin_id
-        self.symbol = symbol
-        self.name = name
 
     def __repr__(self):
         return f'<CryptoCoin {self.coin_id}: Symbol: {self.symbol}, Name: {self.name}>'

@@ -80,3 +80,16 @@ Please select an option:
 9. View All Coin Symbols
 Enter x to exit the program
 ```
+```
+User -> has many portfolios
+portfolio -> has many coins
+
+-> table that joins portfolio and coins 
+-> get rid of users
+-> portfolio and coins
+-> buy a coin with one portfolio 
+
+
+Portfolio -> belongs to user
+coin -> has many portfolio
+```

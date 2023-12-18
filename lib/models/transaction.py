@@ -4,7 +4,7 @@ class Transaction:
   def __init__(self, transaction_id, user_id, crypto_coin, amount):
     self.transaction_id = transaction_id
     self.user_id = user_id
-    self.crypto_coin = crypto_coin
+    self.crypto_coin = crypto_coin #id of the crypto coin 
     # self.coin_symbol = coin_symbol 
     self.amount = amount
 
