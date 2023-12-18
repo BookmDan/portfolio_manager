@@ -1,6 +1,7 @@
 # crypto_model.py
+from rich.style import Style
+from rich.console import Console
 from models.__init__ import CURSOR, CONN
-from models.cryptocoin import CryptoCoin
 
 class Portfolio:
     def __init__(self, portfolio_id, user_id, coin_symbol, amount):
@@ -41,10 +42,10 @@ class Portfolio:
 
     @classmethod
     def create_portfolio(cls, user, coin_symbol, amount):
-        crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
+        # crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
 
-        if crypto_coin:
-            portfolio = Portfolio.create(user, crypto_coin, amount)
+        if coin_symbol:
+            portfolio = Portfolio.create(user, coin_symbol, amount)
             # self.portfolios.append(portfolio)
             return portfolio
         else:
@@ -68,27 +69,7 @@ class Portfolio:
         CURSOR.execute(sql, (user_id,))
         CONN.commit()
 
-    @classmethod
-    def find_portfolio_by_symbol(cls, user_id, coin_symbol):
-        portfolios = []
-
-        crypto_coin_id = CryptoCoin.find_crypto_id_by_symbol(coin_symbol)
-        if crypto_coin_id is not None:
-            sql = """
-                SELECT id, user_id, crypto_coin_id, amount
-                FROM portfolios
-                WHERE user_id = ? AND crypto_coin_id = ?
-            """
-            rows = CURSOR.execute(sql, (user_id, crypto_coin_id)).fetchall()
-            portfolios.extend([cls(*row) for row in rows])
-
-        if portfolios:
-            for portfolio in portfolios:
-                print(f"Portfolio found: Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
-        else:
-            print(f"No portfolios found for {coin_symbol}.")
-            return None
-        
+  
     @classmethod
     def create(cls, user, crypto_coin, amount):
         sql = """
@@ -184,7 +165,7 @@ class Portfolio:
             for row in rows:
                 print(f"Portfolio ID: {row[0]}, Coin ID: {row[2]}, Amount: {row[3]}")
         else:
-            print("No portfolios found for this user.")
+            console.print("No portfolios found for this user.", style='red')
 
 class CryptoPortfolio:
     def __init__(self, portfolio_id, user, coin_symbol, amount):

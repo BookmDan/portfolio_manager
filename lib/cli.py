@@ -163,7 +163,7 @@ def view_all_portfolios():
             for portfolio in portfolios:
                 print(f"  Portfolio ID: {portfolio['portfolio_id']}, Coin ID: {portfolio['coin_id']}, Amount: {portfolio['amount']}")
         else:
-            print("  No portfolios found.")
+            console.print("No portfolios found.")
 
 
 if __name__ == "__main__":
