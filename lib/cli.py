@@ -161,7 +161,7 @@ def view_all_portfolios():
         # print(f"User ID: {user.user_id}, Username: {user.username}")
         if portfolios:
             for portfolio in portfolios:
-                print(f"  Portfolio ID: {portfolio['portfolio_id']}, Coin ID: {portfolio['coin_id']}, Amount: {portfolio['amount']}")
+                print(f"  Portfolio ID: {portfolio['id']}, Coin Symbol: {portfolio['coin_symbol']}, Amount: {portfolio['amount']}")
         else:
             console.print("No portfolios found.")
 

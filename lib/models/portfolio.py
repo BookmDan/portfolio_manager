@@ -19,7 +19,7 @@ class Portfolio:
             CREATE TABLE IF NOT EXISTS portfolios (
                 id INTEGER PRIMARY KEY,
                 user_id INTEGER,
-                crypto_coin_id INTEGER,
+                coin_symbol STRING,
                 amount REAL,
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )
@@ -71,7 +71,7 @@ class Portfolio:
     @classmethod
     def create(cls, user, coin_symbol, amount):
         sql = """
-            INSERT INTO portfolios (user_id, crypto_coin_id, amount)
+            INSERT INTO portfolios (user_id, coin_symbol, amount)
             VALUES (?, ?, ?)
         """
         CURSOR.execute(sql, (user.user_id, coin_symbol, amount))
@@ -88,15 +88,6 @@ class Portfolio:
         """
         CURSOR.execute(sql)
         CONN.commit()
-
-    @classmethod
-    def get_all_symbols(cls):
-        sql = """
-            SELECT DISTINCT crypto_coin_id
-            FROM portfolios
-        """
-        rows = CURSOR.execute(sql).fetchall()
-        return [row[0] for row in rows]
 
     @classmethod
     def delete(cls, user):
@@ -161,7 +152,7 @@ class Portfolio:
         rows = CURSOR.execute(sql, (user_id,)).fetchall()
         if rows:
             for row in rows:
-                print(f"Portfolio ID: {row[0]}, Coin ID: {row[2]}, Amount: {row[3]}")
+                print(f"Portfolio ID: {row[0]}, Coin Symbol: {row[2]}, Amount: {row[3]}")
         else:
             print("No portfolios found for this user.")
 
