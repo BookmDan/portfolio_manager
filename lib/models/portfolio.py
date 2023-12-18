@@ -42,7 +42,6 @@ class Portfolio:
 
     @classmethod
     def create_portfolio(cls, user, coin_symbol, amount):
-        # crypto_coin = CryptoCoin.find_by_symbol(coin_symbol)
 
         if coin_symbol:
             portfolio = Portfolio.create(user, coin_symbol, amount)
@@ -50,6 +49,7 @@ class Portfolio:
             return portfolio
         else:
             raise ValueError(f"Coin symbol '{coin_symbol}' not found.")
+        
         
     @classmethod
     def delete_portfolio(cls, portfolio):
@@ -71,16 +71,16 @@ class Portfolio:
 
   
     @classmethod
-    def create(cls, user, crypto_coin, amount):
+    def create(cls, user, coin_symbol, amount):
         sql = """
             INSERT INTO portfolios (user_id, crypto_coin_id, amount)
             VALUES (?, ?, ?)
         """
-        CURSOR.execute(sql, (user.user_id, crypto_coin.coin_id, amount))
+        CURSOR.execute(sql, (user.user_id, coin_symbol, amount))
         CONN.commit()
 
         portfolio_id = CURSOR.lastrowid
-        portfolio = cls(portfolio_id, user, crypto_coin ,amount)
+        portfolio = cls(portfolio_id, user, coin_symbol ,amount)
         return portfolio
     
     @classmethod
@@ -165,32 +165,15 @@ class Portfolio:
             for row in rows:
                 print(f"Portfolio ID: {row[0]}, Coin ID: {row[2]}, Amount: {row[3]}")
         else:
-            console.print("No portfolios found for this user.", style='red')
-
-class CryptoPortfolio:
-    def __init__(self, portfolio_id, user, coin_symbol, amount):
-        self.portfolio_id = portfolio_id
-        self.user = user
-        self.coin_symbol = coin_symbol
-        self.amount = amount
+            print("No portfolios found for this user.")
 
     @classmethod
-    def create(cls, user, coin_symbol, amount):
+    def coin_symbol_exists(cls, user_id, coin_symbol):
         sql = """
-            INSERT INTO crypto_portfolios (user_id, coin_symbol, amount)
-            VALUES (?, ?, ?)
+            SELECT COUNT(*)
+            FROM portfolios
+            WHERE user_id = ? AND coin_symbol = ?
         """
-        CURSOR.execute(sql, (user.user_id, coin_symbol, amount))
-        CONN.commit()
+        count = CURSOR.execute(sql, (user_id, coin_symbol)).fetchone()[0]
+        return count > 0
 
-        portfolio_id = CURSOR.lastrowid
-        portfolio = cls(portfolio_id, user, coin_symbol, amount)
-        return portfolio
-
-    def delete(self):
-        sql = """
-            DELETE FROM crypto_portfolios
-            WHERE portfolio_id = ?
-        """
-        CURSOR.execute(sql, (self.portfolio_id,))
-        CONN.commit()
