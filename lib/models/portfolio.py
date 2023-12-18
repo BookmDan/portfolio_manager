@@ -4,15 +4,14 @@ from rich.console import Console
 from models.__init__ import CURSOR, CONN
 
 class Portfolio:
-    def __init__(self, portfolio_id, user_id, coin_symbol, amount):
-        self.portfolio_id = portfolio_id
+    def __init__(self, id, user_id, coin_symbol, amount):
+        self.id = id
         self.user_id = user_id
-        # self.crypto_coin_id = crypto_coin_id
         self.coin_symbol = coin_symbol
         self.amount = amount
 
     def __repr__(self):
-        return f'<CryptoPortfolio {self.portfolio_id}: User: {self.user.username}, Coin: {self.coin_symbol}, Amount: {self.amount}>'
+        return f'<CryptoPortfolio {self.id}: User: {self.user.username}, Coin: {self.coin_symbol}, Amount: {self.amount}>'
 
     @classmethod
     def create_table(cls):
@@ -22,8 +21,7 @@ class Portfolio:
                 user_id INTEGER,
                 crypto_coin_id INTEGER,
                 amount REAL,
-                FOREIGN KEY (user_id) REFERENCES users (id),
-                FOREIGN KEY (crypto_coin_id) REFERENCES crypto_coins (id)
+                FOREIGN KEY (user_id) REFERENCES users (id)
             )
         """
         CURSOR.execute(sql)
@@ -57,7 +55,7 @@ class Portfolio:
             DELETE FROM portfolios
             WHERE user_id = ? AND id =? 
         """
-        CURSOR.execute(sql, (portfolio.user_id, portfolio.portfolio_id))
+        CURSOR.execute(sql, (portfolio.user_id, portfolio.id))
         CONN.commit()
     
     @classmethod
@@ -132,7 +130,7 @@ class Portfolio:
     
     def display_all_portfolios(self):
         for portfolio in self.portfolios:
-            print(f"Portfolio ID: {portfolio.portfolio_id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
+            print(f"Portfolio ID: {portfolio.id}, Coin: {portfolio.coin_symbol}, Amount: {portfolio.amount}")
 
     @staticmethod
     def display_all_portfolios(user):
@@ -146,7 +144,7 @@ class Portfolio:
         if rows:
             for row in rows:
                 portfolio_data = {
-                    'portfolio_id': row[0],
+                    'id': row[0],
                     'coin_id': row[2],
                     'amount': row[3]
                 }

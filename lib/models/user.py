@@ -2,6 +2,12 @@ from .__init__ import CURSOR, CONN
 from .portfolio import Portfolio
 
 class User:
+    all= {}
+    def __init__(self, user_id, username):
+        self.user_id = user_id
+        self.username = username
+        # self.portfolios = []
+
     @classmethod
     def create_table(cls):
         sql = """
@@ -21,10 +27,7 @@ class User:
         CURSOR.execute(sql)
         CONN.commit()
 
-    def __init__(self, user_id, username):
-        self.user_id = user_id
-        self.username = username
-        self.portfolios = []
+ 
 
     def __repr__(self):
         return f'<User {self.user_id}: Username: {self.username}>'

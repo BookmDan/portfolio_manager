@@ -16,7 +16,7 @@ def reset_database():
 
     User.create_table()
     Portfolio.create_table()
-    Transaction.create_table()
+
 
     # Create seed data
     bitcoin = Portfolio.create(name='Bitcoin', symbol='BTC')
