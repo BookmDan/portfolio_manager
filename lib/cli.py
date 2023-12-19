@@ -94,7 +94,6 @@ def create_portfolio():
     except (ValueError, IndexError):
         print("Invalid input or user not found.")
 
-
         
 def delete_portfolio():
     users = User.get_all()

@@ -19,9 +19,9 @@ class Portfolio:
             CREATE TABLE IF NOT EXISTS portfolios (
                 id INTEGER PRIMARY KEY,
                 user_id INTEGER,
-                coin_symbol TEXT, 
+                coin_symbol TEXT,
                 amount REAL,
-                FOREIGN KEY (user_id) REFERENCES users (id)
+                FOREIGN KEY (user_id) REFERENCES users (id),
             )
         """
         CURSOR.execute(sql)
@@ -40,7 +40,6 @@ class Portfolio:
 
     @classmethod
     def create_portfolio(cls, user, coin_symbol, amount):
-
         if coin_symbol:
             portfolio = Portfolio.create(user, coin_symbol, amount)
             # self.portfolios.append(portfolio)
@@ -70,16 +69,19 @@ class Portfolio:
   
     @classmethod
     def create(cls, user, coin_symbol, amount):
-        sql = """
-            INSERT INTO portfolios (user_id, coin_symbol, amount)
-            VALUES (?, ?, ?)
-        """
-        CURSOR.execute(sql, (user.user_id, coin_symbol, amount))
-        CONN.commit()
+        if coin_symbol:
+            sql = """
+                INSERT INTO portfolios (user_id, coin_symbol, amount)
+                VALUES (?, ?, ?)
+            """
+            CURSOR.execute(sql, (user.user_id, coin_symbol, amount))
+            CONN.commit()
 
-        portfolio_id = CURSOR.lastrowid
-        portfolio = cls(portfolio_id, user, coin_symbol ,amount)
-        return portfolio
+            portfolio_id = CURSOR.lastrowid
+            portfolio = cls(portfolio_id, user.user_id, coin_symbol, amount)
+            return portfolio
+        else:
+            raise ValueError("CryptoCoin object cannot be empty.")
     
     @classmethod
     def drop_table(cls):
