@@ -28,6 +28,15 @@ class Portfolio:
         CONN.commit()
 
     @classmethod
+    def get_all(cls):
+        sql = """
+            SELECT *
+            FROM portfolios
+        """
+        rows = CURSOR.execute(sql).fetchall()
+        return [cls.instance_from_db(row) for row in rows]
+
+    @classmethod
     def delete_user(self, user):
         if user and user.user_id:
             Portfolio.delete_user_portfolios(user.user_id)
