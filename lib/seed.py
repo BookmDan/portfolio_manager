@@ -1,19 +1,15 @@
-from lib.models.portfolio import CryptoCoin, Portfolio, Transaction
+from lib.models.portfolio import  Portfolio
+from lib.models.user import  User
+
 
 # Drop existing tables
-CryptoCoin.drop_table()
 Portfolio.drop_table()
-Transaction.drop_table()
+User.drop_table()
 
 # Create new tables
-CryptoCoin.create_table()
 Portfolio.create_table()
-Transaction.create_table()
+User.create_table()
 
-# Seed crypto coins
-bitcoin = CryptoCoin.create(name='Bitcoin', symbol='BTC')
-ethereum = CryptoCoin.create(name='Ethereum', symbol='ETH')
-litecoin = CryptoCoin.create(name='Litecoin', symbol='LTC')
 
 # Seed portfolios
 joe_portfolio = Portfolio.create(user_name='Joe', crypto_coin_id=bitcoin.id, amount=0.5)
