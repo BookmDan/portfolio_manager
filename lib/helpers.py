@@ -79,21 +79,6 @@ def user_list():
     return User.display_all()
 
 
-def view_transactions(user):
-    if user:
-        transactions = user.get_transactions()
-        print('')
-        if transactions:
-            print(f'Transactions for {user.username}:')
-            for i, transaction in enumerate(transactions):
-                console.print(i + 1, f"Coin: {transaction['coin_symbol']}, Amount: {transaction['amount']}", style='orange3')
-        else:
-            console.print(f'No transactions for {user.username}', style='orange3')
-        print('')
-        input('Press Enter to return to User Details')
-    else:
-        print("User not found.")
-
 def delete_user(user):
     print('')
     console.print(f'Delete {user.username} and all its transactions? Enter y to confirm, anything else to cancel')

@@ -4,7 +4,7 @@ from rich.console import Console
 from models.user import User
 from models.portfolio import Portfolio
 
-from helpers import exit_program, add_user, delete_user_by_id, view_transactions
+from helpers import exit_program, add_user, delete_user_by_id
 
 console = Console()
 
@@ -161,7 +161,8 @@ def view_all_portfolios():
         # print(f"User ID: {user.user_id}, Username: {user.username}")
         if portfolios:
             for portfolio in portfolios:
-                print(f"  Portfolio ID: {portfolio['id']}, Coin Symbol: {portfolio['coin_symbol']}, Amount: {portfolio['amount']}")
+                print(f"  Portfolio ID: {portfolio.get('id')}, Coin Symbol: {portfolio.get('coin_symbol', 'N/A')}, Amount: {portfolio.get('amount')}")
+
         else:
             console.print("No portfolios found.")
 

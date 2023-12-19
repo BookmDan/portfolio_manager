@@ -19,7 +19,7 @@ class Portfolio:
             CREATE TABLE IF NOT EXISTS portfolios (
                 id INTEGER PRIMARY KEY,
                 user_id INTEGER,
-                coin_symbol STRING,
+                coin_symbol TEXT, 
                 amount REAL,
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )
